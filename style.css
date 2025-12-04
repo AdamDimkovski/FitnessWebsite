@@ -64,10 +64,13 @@ nav-content.active {
 calculation-body {
     font-family: 'Montserrat', sans-serif;
     size: 100px;
-    text-align: left;
-    padding: 50px;
+    text-align: center; 
+    position: relative;
+    left: -20%;
+    padding: 1px;
 }
 
-age-button {
-  padding: 10px;
+result-body {
+  font-family: 'Montserrat', sans-serif;
+  size: 100px;
 }

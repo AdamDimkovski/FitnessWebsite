@@ -7,7 +7,7 @@
 </head>
 <body>
 
-
+<!-- Navigation Bar -->
 <nav>
     <nav-content>
     <a href="index.html">Home</a>
@@ -38,9 +38,9 @@
 
   <calculation-body>
 
-    // Age Button - Value stored as const age
+    <!-- Age Button - Value stored as const age -->
     <p>Age: <input type="number" id="ageInput" placeholder="Enter your age"></p>
-    <button onclick="storeAge()">Submit</button>
+    <!-- <button onclick="storeAge()">Submit</button> -->
 
     <script>
     function storeAge() {
@@ -49,16 +49,16 @@
     }
     </script>
 
-    // Gender RadioButton - Value stored as const age
+    <!-- Gender Radio Button - Value stored as const age -->
     <p>Gender: </p>
     <p>
     <input type="radio" id="option1" name="choice" value="option1">
     <label for="option1">Male</label><br> <input type="radio" id="option2" name="choice" value="option2"> <label for="option2">Female</label>
     </p>
 
-    // Height Button - Value stored as const height
+    <!-- Height Button - Value stored as const height -->
     <p>Height: <input type="number" id="heightInput" placeholder="Please enter your height!"></p>
-    <button onclick="storeHeight()">Submit</button>
+    <!-- <button onclick="storeHeight()">Submit</button> -->
 
     <script>
     function storeAge() {
@@ -67,10 +67,10 @@
     }
     </script>
 
-    // Weight Button - Value stored as const weight
-    <p>Weight: <input> </input> </p>
+    <!-- Weight Button - Value stored as const weight -->
+    <p>Weight: <input type="number" id="weightInput" placeholder="Please enter your weight!"></p>
 
-    // Activity Level Dropdown - Value stored as const activityLevel
+    <!-- Activity Level Dropdown - Value stored as const activityLevel -->
     <p><label for="myDropdown">Activity Level:</label>
       <select id="myDropdown" name="myDropdownName">
       <option value="">Please select</option>
@@ -80,9 +80,14 @@
       </select>
   </p>
 
-  // Calculate Button 
-  <p><button>Calculate</button> </p>
+  <!-- Calculate Button -->
+  <p> <button>Calculate</button> </p>
 
   </calculation-body>
+
+  <result-body>
+    <p>helloooo</p>
+  </result-body>
+
 </body>
 </html>
