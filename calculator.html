@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Calorie Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+<nav>
+    <nav-content>
+    <a href="index.html">Home</a>
+    </nav-content> 
+    <nav-content>
+    <a href="calculator.html">Maintenance Calculator</a>
+    </nav-content>
+    <nav-content>
+    <a href="food.html">Diet Tracker</a>
+    </nav-content>
+    <nav-content>
+    <a href="exercise.html">Workout Tracker</a>
+    </nav-content>
+    <nav-content>
+    <a href="sign-up.html">Sign Up</a>
+    </nav-content>
+    <nav-content>
+    <a href="log-in.html">Log In</a>
+    </nav-content>
+</nav>
+
+  <h1>Calorie Calculator</h1>
+  <p>You can use this maintenance calculator to discover your current maintenance. 
+    (the amount of calories you need to maintain your current weight)
+    This can also be useful for gaining or losing weight!
+  </p>
+  <script src="script.js"></script>
+
+  <calculation-body>
+
+    // Age Button - Value stored as const age
+    <p>Age: <input type="number" id="ageInput" placeholder="Enter your age"></p>
+    <button onclick="storeAge()">Submit</button>
+
+    <script>
+    function storeAge() {
+    const age = document.getElementById("ageInput").value;
+    
+    }
+    </script>
+
+    // Gender RadioButton - Value stored as const age
+    <p>Gender: </p>
+    <p>
+    <input type="radio" id="option1" name="choice" value="option1">
+    <label for="option1">Male</label><br> <input type="radio" id="option2" name="choice" value="option2"> <label for="option2">Female</label>
+    </p>
+
+    // Height Button - Value stored as const height
+    <p>Height: <input type="number" id="heightInput" placeholder="Please enter your height!"></p>
+    <button onclick="storeHeight()">Submit</button>
+
+    <script>
+    function storeAge() {
+    const age = document.getElementById("ageInput").value;
+    
+    }
+    </script>
+
+    // Weight Button - Value stored as const weight
+    <p>Weight: <input> </input> </p>
+
+    // Activity Level Dropdown - Value stored as const activityLevel
+    <p><label for="myDropdown">Activity Level:</label>
+      <select id="myDropdown" name="myDropdownName">
+      <option value="">Please select</option>
+      <option value="option1">Light</option>
+      <option value="option2">Moderate</option>
+      <option value="option3">Intense</option>
+      </select>
+  </p>
+
+  // Calculate Button 
+  <p><button>Calculate</button> </p>
+
+  </calculation-body>
+</body>
+</html>

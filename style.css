@@ -1,6 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('path/to/fonts/Montserrat-Regular.woff2') format('woff2'),
+       url('path/to/fonts/Montserrat-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; 
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('path/to/fonts/Montserrat-Bold.woff2') format('woff2'),
+       url('path/to/fonts/Montserrat-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+nav {
+  background-color: #ffffff;
+  position: fixed;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+ }
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  font-family: 'Montserrat', sans-serif;
+  color:#ffffff;
+  background-color: #300a0a;
   text-align: center;
-  padding: 50px;
+  padding: 80px;
+  overflow-y: scroll;
+}
+
+nav-content {
+  font-weight: bold;  
+  border-radius: 5px;
+  padding: 20px;
+  background-color: #ffffff;   
+  transition: background-color 0.3s ease;
+}
+
+nav-content:hover { 
+font-weight: bold;
+border-radius: 5px;
+padding: 20px;
+background-color: rgb(63, 85, 255);
+cursor: pointer;
+}
+
+nav-content.active {
+  font-weight: bold;
+  border-bottom: 5px solid #000000;
+}
+
+
+calculation-body {
+    font-family: 'Montserrat', sans-serif;
+    size: 100px;
+    text-align: left;
+    padding: 50px;
+}
+
+age-button {
+  padding: 10px;
 }
