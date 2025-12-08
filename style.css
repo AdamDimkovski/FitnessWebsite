@@ -20,6 +20,7 @@
 
 nav {
   background-color: #ffffff;
+  font-weight: 550;
   position: fixed;
   top: 5%;
   left: 50%;
@@ -40,9 +41,8 @@ body {
 }
 
 nav-content {
-  font-weight: bold;  
   border-radius: 5px;
-  padding: 20px;
+  padding: 10px;
   background-color: #ffffff;   
   transition: background-color 0.3s ease;
 }
@@ -50,12 +50,12 @@ nav-content {
 nav-content:hover { 
 font-weight: bold;
 border-radius: 5px;
-padding: 20px;
+padding: 10px;
 background-color: rgb(63, 85, 255);
 cursor: pointer;
 }
 
-nav-content.active {
+nav-content:active {
   font-weight: bold;
   border-bottom: 5px solid #000000;
 }
@@ -66,11 +66,128 @@ calculation-body {
     size: 100px;
     text-align: center; 
     position: relative;
-    left: -20%;
     padding: 1px;
 }
 
 result-body {
   font-family: 'Montserrat', sans-serif;
   size: 100px;
+}
+
+.calculate-button {
+  font-family: 'Montserrat', sans-serif;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.calculate-button:hover {
+  background-color: #45a049;
+  font-weight: bold;
+}
+
+calculate-button:active {
+  font-weight: bold;
+}
+
+.flex-container {
+  display: flex;
+  /* Add space between divs */
+  gap: 5px; 
+  /* Optional: Align items along the cross-axis (vertically) */
+  align-items: center; 
+  /* Optional: Control horizontal alignment */
+  justify-content: space-around; 
+}
+
+.flex-child {
+  /* Flexbox automatically distributes space, but you can control it further */
+  flex: 1; /* Makes children take equal available space */
+  padding: 20px;
+}
+
+#resultBox {
+  display: none; /* Hidden by default */
+}
+
+.result-box {
+  display: none; /* hidden until calculation */
+  background: #1e1e2f; /* dark card background */
+  border: 2px solid white; /* green accent border */
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 24px;
+  max-width: 480px;
+  color: #e0e0e0; /* softer light text for readability */
+  font-family: 'Segoe UI', Arial, sans-serif;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  animation: fadeIn 0.6s ease-in-out;
+  transition: all 0.3s ease;
+}
+
+.result-box h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #e0e0e0; /* highlight heading */
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.result-box h3 {
+  margin-top: 20px;
+  margin-bottom: 8px;
+  color: #ff9800; /* orange accent for macros */
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.result-box p {
+  margin: 6px 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 14px;
+  color: #ffccff;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 220px;
+  background-color: #2b0f1c;
+  color: #ffffff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  font-size: 13px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }

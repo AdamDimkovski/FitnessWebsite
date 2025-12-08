@@ -29,65 +29,186 @@
     </nav-content>
 </nav>
 
+  <!-- Brief paragraph of text to explain page -->
   <h1>Calorie Calculator</h1>
   <p>You can use this maintenance calculator to discover your current maintenance. 
     (the amount of calories you need to maintain your current weight)
     This can also be useful for gaining or losing weight!
   </p>
+
+  <!-- Enables script.js to run upon website running -->
   <script src="script.js"></script>
 
-  <calculation-body>
+  <!-- flex container to hold calculation body and result body -->
+  <div class="flex-container">
+  <div class="flex-child">
+    <calculation-body>
 
     <!-- Age Button - Value stored as const age -->
-    <p>Age: <input type="number" id="ageInput" placeholder="Enter your age"></p>
-    <!-- <button onclick="storeAge()">Submit</button> -->
+   <p>
+  <label for="ageInput">Age:
+    <input type="number" id="ageInput" placeholder="Enter your age">
+    <span class="tooltip">❓
+      <span class="tooltiptext">Your age helps estimate your metabolic rate.</span>
+    </span>
+  </label>
+</p>
 
-    <script>
-    function storeAge() {
-    const age = document.getElementById("ageInput").value;
     
-    }
-    </script>
 
     <!-- Gender Radio Button - Value stored as const age -->
-    <p>Gender: </p>
-    <p>
-    <input type="radio" id="option1" name="choice" value="option1">
-    <label for="option1">Male</label><br> <input type="radio" id="option2" name="choice" value="option2"> <label for="option2">Female</label>
-    </p>
+<p>
+  Gender:
+  <span class="tooltip">❓
+    <span class="tooltiptext">Gender affects how your body burns calories and is used in BMR formulas.</span>
+  </span>
+</p>
 
-    <!-- Height Button - Value stored as const height -->
-    <p>Height: <input type="number" id="heightInput" placeholder="Please enter your height!"></p>
-    <!-- <button onclick="storeHeight()">Submit</button> -->
+<input type="radio" id="option1" name="choice" value="Male">
+<label for="option1">Male</label><br>
 
-    <script>
-    function storeAge() {
-    const age = document.getElementById("ageInput").value;
-    
-    }
-    </script>
+<input type="radio" id="option2" name="choice" value="Female">
+<label for="option2">Female</label><br>
 
-    <!-- Weight Button - Value stored as const weight -->
-    <p>Weight: <input type="number" id="weightInput" placeholder="Please enter your weight!"></p>
+
+   <!-- Height Button - Value stored as const height -->
+   <p>
+  <label for="heightInput">Height:
+    <input type="number" id="heightInput" placeholder="Please enter your height!">
+    <span class="tooltip">❓
+      <span class="tooltiptext">Enter your height in centimeters (cm).</span>
+    </span>
+  </label>
+</p>
+
+   <!-- Weight Button - Value stored as const weight -->
+   <p>
+  <label for="weightInput">Weight:
+    <input type="number" id="weightInput" placeholder="Please enter your weight!">
+    <span class="tooltip">❓
+      <span class="tooltiptext">Enter your current weight in kilograms (kg).</span>
+    </span>
+  </label>
+</p>
 
     <!-- Activity Level Dropdown - Value stored as const activityLevel -->
-    <p><label for="myDropdown">Activity Level:</label>
-      <select id="myDropdown" name="myDropdownName">
-      <option value="">Please select</option>
-      <option value="option1">Light</option>
-      <option value="option2">Moderate</option>
-      <option value="option3">Intense</option>
-      </select>
-  </p>
+<p>
+  <label for="myDropdown">Activity Level:
+    </span>
+  </label>
+  <select id="myDropdown" name="myDropdownName">
+    <option value="">Please select</option>
+    <option value="option1">Sedentary (little to no exercise)</option>
+    <option value="option2">Lightly Active (light exercise 1-3 days/week)</option>
+    <option value="option3">Moderately Active (moderate exercise 3-5 days/week)</option>
+    <option value="option4">Very Active (hard exercise 6-7 days/week)</option>
+    <option value="option5">Super Active (very hard exercise & physical job or twice daily training)</option>
+  </select>
+      <span class="tooltip">❓
+      <span class="tooltiptext">
+        Choose the option that best describes your weekly activity. This affects your calorie needs.
+      </span>
+</p>
+
+    <!-- Goal Selector Dropdown - Value stored as const goalLevel -->
+<p>
+  <label for="goalSelect">Goal:
+    </span>
+  </label>
+  <select id="goalSelect">
+    <option value="">Please select</option>
+    <option value="maintain">Maintain weight</option>
+    <option value="lose">Lose weight</option>
+    <option value="gain">Gain weight</option>
+  </select>
+  <span class="tooltip">❓
+      <span class="tooltiptext">
+        Select whether you want to maintain, lose, or gain weight. This adjusts your calorie target.
+      </span>
+</p>
+
 
   <!-- Calculate Button -->
-  <p> <button>Calculate</button> </p>
+  <button class="calculate-button" onclick="calculateMain()">Calculate</button>
 
   </calculation-body>
+  </div>
 
+<div class="flex-child">
   <result-body>
-    <p>helloooo</p>
+    <p id="resultOutput"></p><div id="resultBox" class="result-box"></div>
   </result-body>
+</div>
+
+<script>
+function calculateMain() {
+  const age = parseInt(document.getElementById("ageInput").value);
+  const gender = document.querySelector('input[name="choice"]:checked');
+  const weight = parseFloat(document.getElementById("weightInput").value);
+  const height = parseFloat(document.getElementById("heightInput").value);
+  const activityLevel = document.getElementById("myDropdown").value;
+  const goal = document.getElementById("goalSelect").value;
+
+  let bmr;
+  let maintenance;
+  let targetCalories;
+
+  // Validation
+  if (!age) { alert("Please enter your age!"); return; }
+  if (!gender) { alert("Please select your gender!"); return; }
+  if (!height) { alert("Please enter your height!"); return; }
+  if (!weight) { alert("Please enter your weight!"); return; }
+  if (!activityLevel) { alert("Please select your activity level!"); return; }
+  if (!goal) { alert("Please select your goal!"); return; }
+
+  // Calculate BMR
+  if (gender.value === "Male") {
+    bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+  } else {
+    bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+  }
+
+  // Activity multiplier
+  switch (activityLevel) {
+    case "option1": maintenance = bmr * 1.2; break;
+    case "option2": maintenance = bmr * 1.375; break;
+    case "option3": maintenance = bmr * 1.55; break;
+    case "option4": maintenance = bmr * 1.725; break;
+    case "option5": maintenance = bmr * 1.9; break;
+  }
+
+  // Adjust target calories based on goal
+  if (goal === "maintain") {
+    targetCalories = maintenance;
+  } else if (goal === "lose") {
+    targetCalories = maintenance - 500; // typical deficit
+  } else if (goal === "gain") {
+    targetCalories = maintenance + 500; // typical surplus
+  }
+
+  // Macronutrient breakdown (40% carbs, 30% protein, 30% fat)
+  const proteinCalories = targetCalories * 0.30;
+  const carbCalories = targetCalories * 0.40;
+  const fatCalories = targetCalories * 0.30;
+
+  const proteinGrams = (proteinCalories / 4).toFixed(0);
+  const carbGrams = (carbCalories / 4).toFixed(0);
+  const fatGrams = (fatCalories / 9).toFixed(0);
+
+  // Display result in second div
+  document.getElementById("resultBox").style.display = "block"; // Show the box
+  document.getElementById("resultBox").innerHTML = `
+    <h2>Results</h2>
+    <p><strong>BMR:</strong> ${bmr.toFixed(2)} kcal/day</p>
+    <p><strong>Maintenance Calories:</strong> ${maintenance.toFixed(2)} kcal/day</p>
+    <p><strong>Target Calories for Goal:</strong> ${targetCalories.toFixed(2)} kcal/day</p>
+    <h3>Macronutrient Breakdown</h3>
+    <p>Protein: ${proteinGrams} g/day</p>
+    <p>Carbs: ${carbGrams} g/day</p>
+    <p>Fat: ${fatGrams} g/day</p>
+  `;
+}
+</script>
 
 </body>
 </html>
