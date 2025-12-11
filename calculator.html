@@ -76,7 +76,7 @@
   <label for="heightInput">Height:
     <input type="number" id="heightInput" placeholder="Please enter your height!">
     <span class="tooltip">❓
-      <span class="tooltiptext">Enter your height in centimeters (cm).</span>
+      <span class="tooltiptext">Enter your height in your selected metric.</span>
     </span>
   </label>
 </p>
@@ -86,7 +86,7 @@
   <label for="weightInput">Weight:
     <input type="number" id="weightInput" placeholder="Please enter your weight!">
     <span class="tooltip">❓
-      <span class="tooltiptext">Enter your current weight in kilograms (kg).</span>
+      <span class="tooltiptext">Enter your current weight in your selected metric.</span>
     </span>
   </label>
 </p>
@@ -131,7 +131,70 @@
   <!-- Calculate Button -->
   <button class="calculate-button" onclick="calculateMain()">Calculate</button>
 
-  </calculation-body>
+  <!-- Toggle Button -->
+  <p>
+    Toggle Extra Settings:
+    <button class="collapsible-btn">+</button>
+  </p>
+
+  <!-- Collapsible Extra Settings -->
+  <div class="collapsible-content">
+    <fieldset>
+      <legend>Unit Preferences</legend>
+
+      <!-- Weight Unit Toggle -->
+      <label>Weight Unit:</label>
+      <div class="toggle-group" id="weight-toggle">
+        <button type="button" class="toggle-btn active" data-unit="kg">kg</button>
+        <button type="button" class="toggle-btn" data-unit="lbs">lbs</button>
+      </div>
+
+      <!-- Height Unit Toggle -->
+      <label>Height Unit:</label>
+      <div class="toggle-group" id="height-toggle">
+        <button type="button" class="toggle-btn active" data-unit="cm">cm</button>
+        <button type="button" class="toggle-btn" data-unit="inches">inches</button>
+      </div>
+    </fieldset>
+  </div>
+
+  <script>
+
+    // Toggle collapsible content
+    const button = document.querySelector(".collapsible-btn");
+    const content = document.querySelector(".collapsible-content");
+
+    button.addEventListener("click", () => {
+      if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+      } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+      }
+    });
+
+    // Unit toggle logic
+    let selectedWeightUnit = "kg";
+    let selectedHeightUnit = "cm";
+
+    document.querySelectorAll("#weight-toggle .toggle-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedWeightUnit = btn.dataset.unit;
+        document.querySelectorAll("#weight-toggle .toggle-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+
+    document.querySelectorAll("#height-toggle .toggle-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedHeightUnit = btn.dataset.unit;
+        document.querySelectorAll("#height-toggle .toggle-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+
+    // You can now use selectedWeightUnit and selectedHeightUnit in your calculateMain() function
+  </script>
+
   </div>
 
 <div class="flex-child">
@@ -144,8 +207,23 @@
 function calculateMain() {
   const age = parseInt(document.getElementById("ageInput").value);
   const gender = document.querySelector('input[name="choice"]:checked');
-  const weight = parseFloat(document.getElementById("weightInput").value);
-  const height = parseFloat(document.getElementById("heightInput").value);
+  
+  let weight = parseFloat(document.getElementById("weightInput").value);
+  let height = parseFloat(document.getElementById("heightInput").value);
+
+  // Get unit preferences from collapsible section
+  const weightUnit = selectedWeightUnit;
+  const heightUnit = selectedHeightUnit;
+
+
+  // Convert to metric if needed
+  if (weightUnit === "lbs") {
+    weight = weight * 0.453592; // lbs to kg
+  }
+  if (heightUnit === "inches") {
+    height = height * 2.54; // inches to cm
+  }
+
   const activityLevel = document.getElementById("myDropdown").value;
   const goal = document.getElementById("goalSelect").value;
 
@@ -181,9 +259,9 @@ function calculateMain() {
   if (goal === "maintain") {
     targetCalories = maintenance;
   } else if (goal === "lose") {
-    targetCalories = maintenance - 500; // typical deficit
+    targetCalories = maintenance - 250; // typical deficit
   } else if (goal === "gain") {
-    targetCalories = maintenance + 500; // typical surplus
+    targetCalories = maintenance + 250; // typical surplus
   }
 
   // Macronutrient breakdown (40% carbs, 30% protein, 30% fat)

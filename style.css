@@ -36,7 +36,7 @@ body {
   color:#ffffff;
   background-color: #300a0a;
   text-align: center;
-  padding: 80px;
+  padding: 150px;
   overflow-y: scroll;
 }
 
@@ -66,7 +66,6 @@ calculation-body {
     size: 100px;
     text-align: center; 
     position: relative;
-    padding: 1px;
 }
 
 result-body {
@@ -75,20 +74,17 @@ result-body {
 }
 
 .calculate-button {
-  font-family: 'Montserrat', sans-serif;
-  padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: #28a745;
   color: white;
+  padding: 10px 20px;
   border: none;
-  border-radius: 10px;
+  border-radius: 6px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 .calculate-button:hover {
-  background-color: #45a049;
-  font-weight: bold;
+  background-color: #218838;
 }
 
 calculate-button:active {
@@ -97,10 +93,10 @@ calculate-button:active {
 
 .flex-container {
   display: flex;
+  align-items: flex-start;
   /* Add space between divs */
-  gap: 5px; 
+  gap:px; 
   /* Optional: Align items along the cross-axis (vertically) */
-  align-items: center; 
   /* Optional: Control horizontal alignment */
   justify-content: space-around; 
 }
@@ -191,3 +187,48 @@ calculate-button:active {
   visibility: visible;
   opacity: 1;
 }
+
+.collapsible-content {
+  width: 80%; /* or try 60%, 50% */
+  max-width: 500px;
+  margin: 4px auto;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  padding: 0;
+  background: #1e1e2f; /* dark card background */
+}
+
+
+.collapsible-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.toggle-group {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0 16px;
+}
+
+.toggle-btn {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background-color: #eee;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-btn.active {
+  background-color: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+}
+
