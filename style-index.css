@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('path/to/fonts/Montserrat-Regular.woff2') format('woff2'),
+       url('path/to/fonts/Montserrat-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; 
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('path/to/fonts/Montserrat-Bold.woff2') format('woff2'),
+       url('path/to/fonts/Montserrat-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+nav {
+  background-color: #ffffff;
+  font-weight: 550;
+  position: fixed;
+  z-index: 1000;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+ }
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  color:#ffffff;
+  background-color: #300a0a;
+  text-align: center;
+  padding: 150px;
+  overflow-y: scroll;
+}
+
+nav-content {
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #ffffff;   
+  transition: background-color 0.3s ease;
+}
+
+nav-content:hover { 
+font-weight: bold;
+border-radius: 5px;
+padding: 10px;
+background-color: rgb(63, 85, 255);
+cursor: pointer;
+}
+
+nav-content:active {
+  font-weight: bold;
+  border-bottom: 5px solid #000000;
+}
+
+index-body {
+  display: block;
+  background-image: url('/images/index-page-background1.jpg');
+  background-size: cover;
+  background-position: center;
+  padding: 100px 20px; /* slightly more breathing room */
+  text-align: center;
+  color: white;
+  position: relative; /* allows layering effects */
+  overflow: hidden;   /* keeps pseudo-elements contained */
+}
+
+/* Add a gradient overlay for depth */
+index-body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.6), 
+    rgba(0, 0, 0, 0.3)
+  );
+  z-index: 0;
+}
+
+/* Make text stand out with shadow and layering */
+index-body h1, index-body p {
+  position: relative;
+  z-index: 1;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+}
+
+/* Add a subtle animation to the heading */
+index-body h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  animation: fadeInDown 1.2s ease-out;
+}
+
+index-body p {
+  font-size: 1.2rem;
+  animation: fadeInUp 1.5s ease-out;
+}
+
+/* Keyframes for smooth entrance */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.feature-row {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap; /* allows stacking on smaller screens */
+  margin: 40px 0;
+}
+
+.feature-box {
+  width: 300px;
+  text-align: center;
+  margin: 20px;
+}
+
+.feature-box img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.feature-box img:hover {
+  transform: scale(1.05);
+}
+
+.feature-box a {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+  color: #6a1b9a;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.feature-box a:hover {
+  text-decoration: underline;
+  color: #8e24aa;
+}
+
+.feature-box button {
+  background: #1e1e2f;
+  color: white;
+  border-radius: 12px;
+  border: none;
+  padding: 12px;  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.feature-box button:hover {
+    cursor: pointer;
+    background: #23232e;
+    text-decoration: underline;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transform: scale(1.05);
+}
+
+body button {
+  background-color: #1e1e2f;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+body button:hover {
+  background-color: #23232e;
+  text-decoration: none;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
