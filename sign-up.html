@@ -1,9 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Sign Up</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="images/favicon.png">
+  
   <link rel="stylesheet" href="style-signup.css">
+
+  <!-- Firebase App (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+
+  <!-- Firebase Authentication (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <!-- Firebase Firestore (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
 </head>
 <body>
 
@@ -21,25 +36,71 @@
     <nav-content>
     <a href="exercise.html">Workout Tracker</a>
     </nav-content>
-    <nav-content>
+    <nav-content id="signupLink">
     <a href="sign-up.html">Sign Up</a>
     </nav-content>
-    <nav-content>
+    <nav-content id="loginLink">
     <a href="log-in.html">Log In</a>
+    </nav-content>
+    <nav-content id="logoutLink" style="display:none;">
+      <a href="#">Log Out</a>
     </nav-content>
 </nav>
 
   <h1>Sign up</h1>
   <p>Fill in the infomation below to make a account.</p>
-  <script src="script.js"></script>
 
 <div class="signup-block">
-  <form id="signupForm">
-    <input type="email" id="signupEmail" placeholder="Email" required>
-    <input type="password" id="signupPassword" placeholder="Password" required>
-    <button type="submit">Sign Up</button>
-  </form>
+<form id="signupForm">
+  <input type="text" id="signupName" placeholder="Full Name" required>
+  <input type="number" id="signupAge" placeholder="Age" required>
+
+  <!-- Fitness Goal Dropdown -->
+  <label for="signupGoal"></label>
+  <select id="signupGoal" required>
+    <option value="" disabled selected>Fitness Goal</option>
+    <option value="weight_loss">Weight Loss</option>
+    <option value="muscle_gain">Muscle Gain</option>
+    <option value="maintenance">Maintenance</option>
+    <option value="endurance">Endurance</option>
+    <option value="general_fitness">General Fitness</option>
+  </select>
+
+  <input type="email" id="signupEmail" placeholder="Email" required>
+  <input type="password" id="signupPassword" placeholder="Password" required>
+  <label>Show Password<input type="checkbox" onclick="revealPassword()"></label>
+  <button type="submit">Sign Up</button>
+</form>
+
+<script>
+  function revealPassword() {
+    var x = document.getElementById("signupPassword");
+    if (x.type === "password") {
+      x.type = "text";
+    } else {
+      x.type = "password";
+    }
+  }
+</script>
+
 </div>
 
+
+<!-- Redirect for Login -->
+ <p>Already have an account? <a href="log-in.html">Log In here.</a></p>
+
 </body>
+
+    <!-- Your Firebase config -->
+  <script src="firebase.js"></script>
+  <script src="script.js"></script>
+
+  
+
+<!-- Footer -->
+<page-footer>
+  <a>Made by Adam Dimkovski</a><br>
+  <footer-text>Litness Fitness</footer-text>
+</page-footer>
+  
 </html>

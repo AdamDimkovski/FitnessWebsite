@@ -1,9 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>My Fitness Website</title>
+  <title>Litness Fitness</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="images/favicon.png">
+  
   <link rel="stylesheet" href="style-index.css">
+
+  <!-- Firebase App (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+
+  <!-- Firebase Authentication (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <!-- Firebase Firestore (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
 </head>
 <body>
 
@@ -21,11 +36,17 @@
     <nav-content>
     <a href="exercise.html">Workout Tracker</a>
     </nav-content>
-    <nav-content>
+    <nav-content id="signupLink">
     <a href="sign-up.html">Sign Up</a>
     </nav-content>
-    <nav-content>
+    <nav-content id="loginLink">
     <a href="log-in.html">Log In</a>
+    </nav-content>
+    <nav-content id="profileLink" style="display:none;">
+    <a href="profile.html">Profile</a>
+    </nav-content>
+    <nav-content id="logoutLink" style="display:none;">
+    <a href="#">Log Out</a>
     </nav-content>
 </nav>
 
@@ -54,10 +75,20 @@
 
   <!-- Sign up Section -->
    <h1> Sign up for a account today to start using our online trackers! </h1>
-    <a href="sign-up.html"><Button> Sign up </Button><a href="log-in.html"><Button> Log In </Button>  
+    <a href="sign-up.html"><Button> Sign up </Button><a href="log-in.html"><Button> Log In </Button></a>
+
+
+
   <!-- Scripts -->
+  <script src="firebase.js"></script>
   <script src="script.js"></script>
 
 </body>
+
+<!-- Footer -->
+<page-footer>
+  <a>Made by Adam Dimkovski</a><br>
+  <footer-text>Litness Fitness</footer-text>
+</page-footer>
 
 </html>

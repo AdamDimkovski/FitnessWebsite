@@ -64,50 +64,24 @@ nav a:hover {
   color: #dddddd; /* optional: subtle hover effect */
 }
 
-.login-block {
-  max-width: 400px;
-  margin: 80px auto;
-  padding: 30px;
+/* Modal styling */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
   background-color: #333333;
-  border-radius: 10px;
+  padding: 30px;
+  border-radius: 8px;
   text-align: center;
-  color: #fff;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
-
-.login-block h2 {
-  margin-bottom: 10px;
-  font-size: 24px;
-}
-
-.login-block p {
-  margin-bottom: 20px;
-  font-size: 14px;
-}
-
-.login-block input {
-  width: 90%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
-}
-
-.login-block button {
-  width: 100%;
-  padding: 12px;
-  background-color: #000;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.login-block button:hover {
-  background-color: #333;
 }
 
 page-footer {

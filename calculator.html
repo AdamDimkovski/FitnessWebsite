@@ -1,252 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Calorie Calculator</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="images/favicon.png">
+
   <link rel="stylesheet" href="style-calculator.css">
+
+  <!-- Firebase App (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
+
 <body>
 
 <!-- Navigation Bar -->
 <nav>
-    <nav-content>
-    <a href="index.html">Home</a>
-    </nav-content> 
-    <nav-content>
-    <a href="calculator.html">Maintenance Calculator</a>
-    </nav-content>
-    <nav-content>
-    <a href="food.html">Diet Tracker</a>
-    </nav-content>
-    <nav-content>
-    <a href="exercise.html">Workout Tracker</a>
-    </nav-content>
-    <nav-content>
-    <a href="sign-up.html">Sign Up</a>
-    </nav-content>
-    <nav-content>
-    <a href="log-in.html">Log In</a>
-    </nav-content>
+  <nav-content><a href="index.html">Home</a></nav-content>
+  <nav-content><a href="calculator.html">Maintenance Calculator</a></nav-content>
+  <nav-content><a href="food.html">Diet Tracker</a></nav-content>
+  <nav-content><a href="exercise.html">Workout Tracker</a></nav-content>
+  <nav-content id="signupLink"><a href="sign-up.html">Sign Up</a></nav-content>
+  <nav-content id="loginLink"><a href="log-in.html">Log In</a></nav-content>
+  <nav-content id="profileLink" style="display:none;"><a href="profile.html">Profile</a></nav-content>
+  <nav-content id="logoutLink" style="display:none;"><a href="#">Log Out</a></nav-content>
 </nav>
 
-  <!-- Brief paragraph of text to explain page -->
-  <h1>Calorie Calculator</h1>
-  <p>You can use this maintenance calculator to discover your current maintenance. 
-    (the amount of calories you need to maintain your current weight)
-    This can also be useful for gaining or losing weight!
-  </p>
-
-  <!-- Enables script.js to run upon website running -->
-  <script src="script.js"></script>
-
-  <!-- flex container to hold calculation body and result body -->
-  <div class="flex-container">
-  <div class="flex-child">
-    <calculation-body>
-
-    <!-- Age Button - Value stored as const age -->
-   <p>
-  <label for="ageInput">Age:
-    <input type="number" id="ageInput" placeholder="Enter your age">
-    <span class="tooltip">❓
-      <span class="tooltiptext">Your age helps estimate your metabolic rate.</span>
-    </span>
-  </label>
-</p>
-
-    
-
-    <!-- Gender Radio Button - Value stored as const age -->
+<!-- Page Header -->
+<h1>Calorie Calculator</h1>
 <p>
-  Gender:
-  <span class="tooltip">❓
-    <span class="tooltiptext">Gender affects how your body burns calories and is used in BMR formulas.</span>
-  </span>
+  You can use this maintenance calculator to discover your current maintenance
+  (the amount of calories you need to maintain your current weight).
+  This can also be useful for gaining or losing weight!
 </p>
 
-<input type="radio" id="option1" name="choice" value="Male">
-<label for="option1">Male</label><br>
+<!-- Calculator Card -->
+<div class="calculator-card">
 
-<input type="radio" id="option2" name="choice" value="Female">
-<label for="option2">Female</label><br>
+  <!-- SECTION: Personal Details -->
+  <h2 class="section-header">Please input your details:</h2>
+
+  <div class="input-grid">
+
+    <!-- Age -->
+    <div class="input-group">
+      <div class="label-with-tooltip">
+        <label for="ageInput">Age</label>
+        <span class="tooltip">❓
+          <span class="tooltiptext">Your age helps estimate your metabolic rate.</span>
+        </span>
+      </div>
+      <input type="number" id="ageInput" placeholder="Enter your age">
+    </div>
+
+    <!-- Gender -->
+    <div class="input-group">
+      <div class="label-with-tooltip">
+        <label>Gender</label>
+        <span class="tooltip">❓
+          <span class="tooltiptext">Gender affects how your body burns calories.</span>
+        </span>
+      </div>
+
+      <div class="gender-toggle">
+        <button type="button" class="gender-btn active" data-gender="Male">Male</button>
+        <button type="button" class="gender-btn" data-gender="Female">Female</button>
+      </div>
+    </div>
 
 
-   <!-- Height Button - Value stored as const height -->
-   <p>
-  <label for="heightInput">Height:
-    <input type="number" id="heightInput" placeholder="Please enter your height!">
-    <span class="tooltip">❓
-      <span class="tooltiptext">Enter your height in your selected metric.</span>
-    </span>
-  </label>
-</p>
 
-   <!-- Weight Button - Value stored as const weight -->
-   <p>
-  <label for="weightInput">Weight:
-    <input type="number" id="weightInput" placeholder="Please enter your weight!">
-    <span class="tooltip">❓
-      <span class="tooltiptext">Enter your current weight in your selected metric.</span>
-    </span>
-  </label>
-</p>
+    <!-- Height -->
+    <div class="input-group">
+      <div class="label-with-tooltip">
+        <label for="heightInput">Height</label>
+        <span class="tooltip">❓
+          <span class="tooltiptext">Enter your height in your selected metric.</span>
+        </span>
+      </div>
+      <input type="number" id="heightInput" placeholder="Enter your height">
+    </div>
 
-    <!-- Activity Level Dropdown - Value stored as const activityLevel -->
-<p>
-  <label for="myDropdown">Activity Level:
-    </span>
-  </label>
-  <select id="myDropdown" name="myDropdownName">
-    <option value="">Please select</option>
-    <option value="option1">Sedentary (little to no exercise)</option>
-    <option value="option2">Lightly Active (light exercise 1-3 days/week)</option>
-    <option value="option3">Moderately Active (moderate exercise 3-5 days/week)</option>
-    <option value="option4">Very Active (hard exercise 6-7 days/week)</option>
-    <option value="option5">Super Active (very hard exercise & physical job or twice daily training)</option>
-  </select>
-      <span class="tooltip">❓
-      <span class="tooltiptext">
-        Choose the option that best describes your weekly activity. This affects your calorie needs.
-      </span>
-</p>
+    <!-- Weight -->
+    <div class="input-group">
+      <div class="label-with-tooltip">
+        <label for="weightInput">Weight</label>
+        <span class="tooltip">❓
+          <span class="tooltiptext">Enter your current weight in your selected metric.</span>
+        </span>
+      </div>
+      <input type="number" id="weightInput" placeholder="Enter your weight">
+    </div>
 
-    <!-- Goal Selector Dropdown - Value stored as const goalLevel -->
-<p>
-  <label for="goalSelect">Goal:
-    </span>
-  </label>
-  <select id="goalSelect">
-    <option value="">Please select</option>
-    <option value="maintain">Maintain weight</option>
-    <option value="lose">Lose weight</option>
-    <option value="gain">Gain weight</option>
-  </select>
-  <span class="tooltip">❓
-      <span class="tooltiptext">
-        Select whether you want to maintain, lose, or gain weight. This adjusts your calorie target.
-      </span>
-</p>
+    <!-- Activity Level -->
+    <div class="input-group">
+      <div class="label-with-tooltip">
+        <label for="myDropdown">Activity Level</label>
+        <span class="tooltip">❓
+          <span class="tooltiptext">Choose the option that best describes your weekly activity.</span>
+        </span>
+      </div>
+      <select id="myDropdown">
+        <option value="">Please select</option>
+        <option value="option1">Sedentary (little to no exercise)</option>
+        <option value="option2">Lightly Active (1–3 days/week)</option>
+        <option value="option3">Moderately Active (3–5 days/week)</option>
+        <option value="option4">Very Active (6–7 days/week)</option>
+        <option value="option5">Super Active (intense training or physical job)</option>
+      </select>
+    </div>
 
+    <!-- Goal -->
+    <div class="input-group">
+      <div class="label-with-tooltip">
+        <label for="goalSelect">Goal</label>
+        <span class="tooltip">❓
+          <span class="tooltiptext">Choose whether you want to maintain, lose, or gain weight.</span>
+        </span>
+      </div>
+      <select id="goalSelect">
+        <option value="">Please select</option>
+        <option value="maintain">Maintain weight</option>
+        <option value="lose">Lose weight</option>
+        <option value="gain">Gain weight</option>
+      </select>
+    </div>
+
+  </div> <!-- end input-grid -->
 
   <!-- Calculate Button -->
-  <button class="calculate-button" onclick="calculateMain()">Calculate</button>
-
-  <!-- Toggle Button -->
-  <p>
-    Toggle Extra Settings:
-    <button class="collapsible-btn">+</button>
-  </p>
-
-  <!-- Collapsible Extra Settings -->
-  <div class="collapsible-content">
-    <fieldset>
-      <legend>Unit Preferences</legend>
-
-      <!-- Weight Unit Toggle -->
-      <label>Weight Unit:</label>
-      <div class="toggle-group" id="weight-toggle">
-        <button type="button" class="toggle-btn active" data-unit="kg">kg</button>
-        <button type="button" class="toggle-btn" data-unit="lbs">lbs</button>
-      </div>
-
-      <!-- Height Unit Toggle -->
-      <label>Height Unit:</label>
-      <div class="toggle-group" id="height-toggle">
-        <button type="button" class="toggle-btn active" data-unit="cm">cm</button>
-        <button type="button" class="toggle-btn" data-unit="inches">inches</button>
-      </div>
-    </fieldset>
+  <div class="input-group">
+    <button class="calculate-button" onclick="calculateMain()">Calculate</button>
   </div>
 
-  <script>
+  <!-- Extra Settings -->
+  <div class="extra-settings">
 
-    // Toggle collapsible content
-    const button = document.querySelector(".collapsible-btn");
-    const content = document.querySelector(".collapsible-content");
+    <div class="label-with-tooltip">
+      <label>Extra Settings</label>
+      <span class="tooltip">❓
+        <span class="tooltiptext">Adjust your preferred units for height and weight.</span>
+      </span>
+    </div>
 
-    button.addEventListener("click", () => {
-      if (content.style.maxHeight) {
-        content.style.maxHeight = null;
-      } else {
-        content.style.maxHeight = content.scrollHeight + "px";
-      }
-    });
+    <button class="collapsible-btn">Toggle Extra Settings</button>
 
-    // Unit toggle logic
-    let selectedWeightUnit = "kg";
-    let selectedHeightUnit = "cm";
+    <div class="collapsible-content">
+      <fieldset>
+        <legend>Unit Preferences</legend>
 
-    document.querySelectorAll("#weight-toggle .toggle-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedWeightUnit = btn.dataset.unit;
-        document.querySelectorAll("#weight-toggle .toggle-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-      });
-    });
+        <!-- Weight Unit -->
+        <div class="input-group">
+          <div class="label-with-tooltip">
+            <label>Weight Unit</label>
+            <span class="tooltip">❓
+              <span class="tooltiptext">Choose whether to enter weight in kg or lbs.</span>
+            </span>
+          </div>
+          <div class="toggle-group" id="weight-toggle">
+            <button type="button" class="toggle-btn active" data-unit="kg">kg</button>
+            <button type="button" class="toggle-btn" data-unit="lbs">lbs</button>
+          </div>
+        </div>
 
-    document.querySelectorAll("#height-toggle .toggle-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedHeightUnit = btn.dataset.unit;
-        document.querySelectorAll("#height-toggle .toggle-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-      });
-    });
+        <!-- Height Unit -->
+        <div class="input-group">
+          <div class="label-with-tooltip">
+            <label>Height Unit</label>
+            <span class="tooltip">❓
+              <span class="tooltiptext">Choose whether to enter height in cm or inches.</span>
+            </span>
+          </div>
+          <div class="toggle-group" id="height-toggle">
+            <button type="button" class="toggle-btn active" data-unit="cm">cm</button>
+            <button type="button" class="toggle-btn" data-unit="inches">inches</button>
+          </div>
+        </div>
 
-    // You can now use selectedWeightUnit and selectedHeightUnit in your calculateMain() function
-  </script>
-
+      </fieldset>
+    </div>
   </div>
 
-<div class="flex-child">
-  <result-body>
-    <p id="resultOutput"></p><div id="resultBox" class="result-box"></div>
-  </result-body>
+</div> <!-- end calculator-card -->
+
+<div id="resultBox" class="result-box">
+  <p id="resultOutput"></p>
 </div>
 
+
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Collapsible
+  const button = document.querySelector(".collapsible-btn");
+  const content = document.querySelector(".collapsible-content");
+
+  button.addEventListener("click", () => {
+    content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px";
+  });
+
+  // Unit toggles
+  window.selectedWeightUnit = "kg";
+  window.selectedHeightUnit = "cm";
+
+  document.querySelectorAll("#weight-toggle .toggle-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      selectedWeightUnit = btn.dataset.unit;
+      document.querySelectorAll("#weight-toggle .toggle-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
+  document.querySelectorAll("#height-toggle .toggle-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      selectedHeightUnit = btn.dataset.unit;
+      document.querySelectorAll("#height-toggle .toggle-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
+  // Gender toggle buttons
+  window.selectedGender = "Male"; // default
+
+  document.querySelectorAll(".gender-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      selectedGender = btn.dataset.gender;
+      document.querySelectorAll(".gender-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+});
+
+// Main calculation
 function calculateMain() {
   const age = parseInt(document.getElementById("ageInput").value);
-  const gender = document.querySelector('input[name="choice"]:checked');
-  
   let weight = parseFloat(document.getElementById("weightInput").value);
   let height = parseFloat(document.getElementById("heightInput").value);
 
-  // Get unit preferences from collapsible section
   const weightUnit = selectedWeightUnit;
   const heightUnit = selectedHeightUnit;
-
-
-  // Convert to metric if needed
-  if (weightUnit === "lbs") {
-    weight = weight * 0.453592; // lbs to kg
-  }
-  if (heightUnit === "inches") {
-    height = height * 2.54; // inches to cm
-  }
-
+  const gender = selectedGender;
   const activityLevel = document.getElementById("myDropdown").value;
   const goal = document.getElementById("goalSelect").value;
 
-  let bmr;
-  let maintenance;
-  let targetCalories;
-
   // Validation
-  if (!age) { alert("Please enter your age!"); return; }
-  if (!gender) { alert("Please select your gender!"); return; }
-  if (!height) { alert("Please enter your height!"); return; }
-  if (!weight) { alert("Please enter your weight!"); return; }
-  if (!activityLevel) { alert("Please select your activity level!"); return; }
-  if (!goal) { alert("Please select your goal!"); return; }
+  if (!age) return alert("Please enter your age!");
+  if (!gender) return alert("Please select your gender!");
+  if (!height) return alert("Please enter your height!");
+  if (!weight) return alert("Please enter your weight!");
+  if (!activityLevel) return alert("Please select your activity level!");
+  if (!goal) return alert("Please select your goal!");
 
-  // Calculate BMR
-  if (gender.value === "Male") {
+  // Convert units
+  if (weightUnit === "lbs") weight *= 0.453592;
+  if (heightUnit === "inches") height *= 2.54;
+
+  // BMR calculation
+  let bmr;
+  if (gender === "Male") {
     bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
   } else {
     bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
   }
 
   // Activity multiplier
+  let maintenance;
   switch (activityLevel) {
     case "option1": maintenance = bmr * 1.2; break;
     case "option2": maintenance = bmr * 1.375; break;
@@ -255,31 +276,24 @@ function calculateMain() {
     case "option5": maintenance = bmr * 1.9; break;
   }
 
-  // Adjust target calories based on goal
-  if (goal === "maintain") {
-    targetCalories = maintenance;
-  } else if (goal === "lose") {
-    targetCalories = maintenance - 250; // typical deficit
-  } else if (goal === "gain") {
-    targetCalories = maintenance + 250; // typical surplus
-  }
+  // Goal adjustment
+  let targetCalories =
+    goal === "maintain" ? maintenance :
+    goal === "lose" ? maintenance - 250 :
+    maintenance + 250;
 
-  // Macronutrient breakdown (40% carbs, 30% protein, 30% fat)
-  const proteinCalories = targetCalories * 0.30;
-  const carbCalories = targetCalories * 0.40;
-  const fatCalories = targetCalories * 0.30;
+  // Macronutrients
+  const proteinGrams = ((targetCalories * 0.30) / 4).toFixed(0);
+  const carbGrams = ((targetCalories * 0.40) / 4).toFixed(0);
+  const fatGrams = ((targetCalories * 0.30) / 9).toFixed(0);
 
-  const proteinGrams = (proteinCalories / 4).toFixed(0);
-  const carbGrams = (carbCalories / 4).toFixed(0);
-  const fatGrams = (fatCalories / 9).toFixed(0);
-
-  // Display result in second div
-  document.getElementById("resultBox").style.display = "block"; // Show the box
-  document.getElementById("resultBox").innerHTML = `
+  // Display results
+  document.getElementById("resultBox").style.display = "block";
+  document.getElementById("resultOutput").innerHTML = `
     <h2>Results</h2>
     <p><strong>BMR:</strong> ${bmr.toFixed(2)} kcal/day</p>
     <p><strong>Maintenance Calories:</strong> ${maintenance.toFixed(2)} kcal/day</p>
-    <p><strong>Target Calories for Goal:</strong> ${targetCalories.toFixed(2)} kcal/day</p>
+    <p><strong>Target Calories:</strong> ${targetCalories.toFixed(2)} kcal/day</p>
     <h3>Macronutrient Breakdown</h3>
     <p>Protein: ${proteinGrams} g/day</p>
     <p>Carbs: ${carbGrams} g/day</p>
@@ -287,6 +301,16 @@ function calculateMain() {
   `;
 }
 </script>
+
+<!-- Firebase config -->
+<script src="firebase.js"></script>
+<script src="script.js"></script>
+
+<!-- Footer -->
+<page-footer>
+  <a>Made by Adam Dimkovski</a><br>
+  <footer-text>Litness Fitness</footer-text>
+</page-footer>
 
 </body>
 </html>

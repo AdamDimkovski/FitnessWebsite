@@ -23,11 +23,11 @@ nav {
 body {
   font-family: 'Montserrat', sans-serif;
   color:#ffffff;
-  font-weight: bold;
   background: linear-gradient(90deg,rgba(253, 29, 29, 1) 0%, rgba(252, 176, 69, 1) 100%);
   text-align: center;
   padding: 150px;
   overflow-y: scroll;
+  margin: 0;
 }
 
 nav-content {
@@ -64,50 +64,70 @@ nav a:hover {
   color: #dddddd; /* optional: subtle hover effect */
 }
 
-.login-block {
-  max-width: 400px;
-  margin: 80px auto;
-  padding: 30px;
-  background-color: #333333;
-  border-radius: 10px;
-  text-align: center;
-  color: #fff;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
 
-.login-block h2 {
+/* Page title */
+h1 {
+  font-size: 3rem;
+  margin-top: 40px;
   margin-bottom: 10px;
-  font-size: 24px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+  animation: fadeInDown 1.2s ease-out;
 }
 
-.login-block p {
-  margin-bottom: 20px;
-  font-size: 14px;
+p {
+  font-size: 1.2rem;
+  color: #e6e6e6;
+  margin-bottom: 40px;
+  animation: fadeInUp 1.5s ease-out;
 }
 
-.login-block input {
-  width: 90%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
+/* Profile card container */
+.profile-container {
+  width: 60%;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #1e1e2f;
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  text-align: left;
+  animation: fadeInUp 1.2s ease-out;
 }
 
-.login-block button {
-  width: 100%;
-  padding: 12px;
-  background-color: #000;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+/* Each profile row */
+.profile-container p {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  margin: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  font-size: 1.1rem;
 }
 
-.login-block button:hover {
-  background-color: #333;
+/* Label styling */
+.profile-container strong {
+  color: rgb(63, 85, 255); /* same blue hover color as nav */
+  font-weight: 700;
+}
+
+/* Value styling */
+.profile-container span {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  .profile-container {
+    width: 85%;
+    padding: 25px;
+  }
+
+  .profile-container p {
+    flex-direction: column;
+    gap: 5px;
+    text-align: left;
+  }
 }
 
 page-footer {
@@ -116,7 +136,7 @@ page-footer {
   bottom: 0;
   width: 100%;
   height: 10%;
-  background-color: #333333;
+  background-color: #23232e;
   color: white;
   text-align: center;
 }

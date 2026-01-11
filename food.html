@@ -1,9 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Diet Tracker</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Food Tracker</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="images/favicon.png">
+  
+  <link rel="stylesheet" href="style-food.css">
+
+  <!-- Firebase App (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+
+  <!-- Firebase Authentication (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <!-- Firebase Firestore (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
 </head>
 <body>
 
@@ -21,16 +36,36 @@
     <nav-content>
     <a href="exercise.html">Workout Tracker</a>
     </nav-content>
-    <nav-content>
+    <nav-content id="signupLink">
     <a href="sign-up.html">Sign Up</a>
     </nav-content>
-    <nav-content>
+    <nav-content id="loginLink">
     <a href="log-in.html">Log In</a>
+    </nav-content>
+    <nav-content id="profileLink" style="display:none;">
+    <a href="profile.html">Profile</a>
+    </nav-content>
+    <nav-content id="logoutLink" style="display:none;">
+    <a href="#">Log Out</a>
     </nav-content>
 </nav>
 
   <h1>Litness Fitness</h1>
   <p>Track workouts, get tips, and stay healthy!</p>
+
+  <!-- Access Blocker Modal -->
+<div id="accessBlocker" style="display:none;" class="modal">
+  <div class="modal-content">
+    <h2>Must have Account to use this page.</h2>
+    <p>Click the buttons below to log in or sign up!.</p>
+    <a href="sign-up.html"><button>Sign Up</button></a>
+    <a href="log-in.html"><button>Log In</button></a>
+  </div>
+</div>
+
+
+  <!-- Your Firebase config -->
+  <script src="firebase.js"></script>
   <script src="script.js"></script>
 
 </body>

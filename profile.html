@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile</title>
+
+  <link rel="icon" type="image/x-icon" href="images/favicon.png">
+  <link rel="stylesheet" href="style-profile.css">
+
+  <!-- Firebase (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase config + global script -->
+  <script src="firebase.js"></script>
+  <script src="script.js"></script>
+
+</head>
+
+<body>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <nav-content><a href="index.html">Home</a></nav-content>
+    <nav-content><a href="calculator.html">Maintenance Calculator</a></nav-content>
+    <nav-content><a href="food.html">Diet Tracker</a></nav-content>
+    <nav-content><a href="exercise.html">Workout Tracker</a></nav-content>
+    <nav-content id="signupLink"><a href="sign-up.html">Sign Up</a></nav-content>
+    <nav-content id="loginLink"><a href="log-in.html">Log In</a></nav-content>
+    <nav-content id="profileLink" style="display:none;"><a href="profile.html">Profile</a></nav-content>
+    <nav-content id="logoutLink" style="display:none;"><a href="#">Log Out</a></nav-content>
+  </nav>
+
+  <h1>My Profile</h1>
+  <p>Below are your account details</p>
+
+  <!-- Profile Display Section -->
+  <div class="profile-container">
+    <p><strong>Name:</strong> <span id="profileName"></span></p>
+    <p><strong>Age:</strong> <span id="profileAge"></span></p>
+    <p><strong>Goal:</strong> <span id="profileGoal"></span></p>
+    <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+  </div>
+
+  <!-- Profile JS -->
+  <script>
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        const db = firebase.firestore();
+
+        db.collection("users").doc(user.uid).get().then((doc) => {
+          if (doc.exists) {
+            const data = doc.data();
+
+            document.getElementById("profileName").innerText = data.name || "";
+            document.getElementById("profileAge").innerText = data.age || "";
+            document.getElementById("profileGoal").innerText = formatGoal(data.goal);
+            document.getElementById("profileEmail").innerText = data.email || user.email;
+          } else {
+            console.log("No profile data found for this user.");
+          }
+        });
+      } else {
+        window.location.href = "log-in.html";
+      }
+    })
+    function formatGoal(goal) {
+    return goal
+    .replace(/_/g, " ")                 // turn underscores into spaces
+    .replace(/\b\w/g, c => c.toUpperCase()); // capitalize each word
+};
+  </script>
+
+
+</body>
+
+<!-- Footer -->
+<page-footer>
+  <a>Made by Adam Dimkovski</a><br>
+  <footer-text>Litness Fitness</footer-text>
+</page-footer>
+  
+</html>
