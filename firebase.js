@@ -1,5 +1,5 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyC0B7lfx7gGMzrwP4vCYIQ4SHdtCdZAzJI",
+  apiKey: "AIzaSyDVljCm7FEsbcAkVnxS0yyZ6LBouL4-hho",
   authDomain: "litnessfitness-72cb2.firebaseapp.com",
   projectId: "litnessfitness-72cb2",
   storageBucket: "litnessfitness-72cb2.appspot.com",
