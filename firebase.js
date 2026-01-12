@@ -1,5 +1,5 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyDVljCm7FEsbcAkVnxS0yyZ6LBouL4-hho",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "litnessfitness-72cb2.firebaseapp.com",
   projectId: "litnessfitness-72cb2",
   storageBucket: "litnessfitness-72cb2.appspot.com",
