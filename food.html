@@ -3,23 +3,25 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Food Tracker</title>
+  <title>Diet Tracker</title>
 
-  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="images/favicon.png">
-  
   <link rel="stylesheet" href="style-food.css">
 
-  <!-- Firebase App (compat version) -->
+  <!-- Charts.js-->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+  
+  <!-- Firebase (compat version) -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-
-  <!-- Firebase Authentication (compat version) -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
-  <!-- Firebase Firestore (compat version) -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+    <!-- Firebase config + global script -->
+  <script src="firebase.js"></script>
+  <script src="script.js"></script>
+
 </head>
+
 <body>
 
 <!-- Navigation Bar -->
@@ -50,8 +52,259 @@
     </nav-content>
 </nav>
 
-  <h1>Litness Fitness</h1>
-  <p>Track workouts, get tips, and stay healthy!</p>
+  <h1><strong>Welcome back,</strong> <span id="profileName"></span></h1>
+  <p>Track your daily food intake and monitor your nutrition!</p>
+
+<!-- First Time User Modal for Height/Weight -->
+<div id="firstTimeModal" class="modal hidden">
+  <div class="modal-content">
+    <h2 class="modal-title">Welcome to Diet Tracker!</h2>
+    <p style="color: #ccc; margin-bottom: 20px;">Help us personalize your experience by providing your height and weight.</p>
+    
+    <div class="first-time-form">
+      <label for="heightInput" style="display: block; margin-bottom: 8px; text-align: left;">Height (cm)</label>
+      <input type="number" id="heightInput" placeholder="e.g., 180" min="100" max="250">
+      
+      <label for="weightInput" style="display: block; margin-bottom: 8px; text-align: left; margin-top: 15px;">Current Weight (kg)</label>
+      <input type="number" id="weightInput" placeholder="e.g., 75" min="30" max="300" step="0.1">
+      
+      <label for="targetWeightInput" style="display: block; margin-bottom: 8px; text-align: left; margin-top: 15px;">Target Weight (kg)</label>
+      <input type="number" id="targetWeightInput" placeholder="e.g., 70" min="30" max="300" step="0.1">
+      
+      <label for="genderInput" style="display: block; margin-bottom: 8px; text-align: left; margin-top: 15px;">Gender</label>
+      <select id="genderInput" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #777; background: #222; color: #fff; font-family: 'Montserrat', sans-serif;">
+        <option value="">Select Gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+      
+      <label for="activityInput" style="display: block; margin-bottom: 8px; text-align: left; margin-top: 15px;">Activity Level</label>
+      <select id="activityInput" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #777; background: #222; color: #fff; font-family: 'Montserrat', sans-serif;">
+        <option value="">Select Activity Level</option>
+        <option value="1.2">Sedentary (little or no exercise)</option>
+        <option value="1.375">Lightly active (1-3 days/week)</option>
+        <option value="1.55">Moderately active (3-5 days/week)</option>
+        <option value="1.725">Very active (6-7 days/week)</option>
+        <option value="1.9">Extremely active (2x per day/intense training)</option>
+      </select>
+      
+      <label for="targetWaterInput" style="display: block; margin-bottom: 8px; text-align: left; margin-top: 15px;">Daily Water Target (ml)</label>
+      <input type="number" id="targetWaterInput" placeholder="e.g., 3000" min="500" max="10000" step="100">
+      
+      <label for="targetProteinInput" style="display: block; margin-bottom: 8px; text-align: left; margin-top: 15px;">Daily Protein Target (g) <span style="color: #aaa;">(optional)</span></label>
+      <input type="number" id="targetProteinInput" placeholder="Leave empty for auto-calculation" min="20" max="500" step="5">
+      
+      <label for="targetCarbsInput" style="display: block; margin-bottom: 8px; text-align: left; margin-top: 15px;">Daily Carbs Target (g) <span style="color: #aaa;">(optional)</span></label>
+      <input type="number" id="targetCarbsInput" placeholder="Leave empty for auto-calculation" min="20" max="500" step="5">
+      
+      <label for="targetFatInput" style="display: block; margin-bottom: 8px; text-align: left; margin-top: 15px;">Daily Fat Target (g) <span style="color: #aaa;">(optional)</span></label>
+      <input type="number" id="targetFatInput" placeholder="Leave empty for auto-calculation" min="20" max="300" step="5">
+      
+      <button id="saveHeightWeightBtn" class="confirm-btn" style="margin-top: 20px;">Save and Continue</button>
+      <button id="closeProfileModalBtn" class="close-btn" style="margin-top: 10px; display: none;">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Target Calories Card -->
+<div id="targetCaloriesCard" class="target-calories-card hidden">
+  <h3>Your Daily Target</h3>
+  <div class="target-display">
+    <div class="target-value">
+      <span id="targetCaloriesValue">0</span>
+      <span class="target-label">Calories</span>
+    </div>
+  </div>
+  <p style="color: #aaa; font-size: 0.9rem; margin-top: 10px;">Based on your profile and activity level</p>
+  <button id="editProfileBtn" class="modal-btn" style="margin-top: 15px;">Edit Profile</button>
+</div>
+
+<script>
+firebase.auth().onAuthStateChanged(async (user) => {
+  if (!user) return; // not logged in, nothing to show
+
+  const db = firebase.firestore();
+  const userRef = db.collection("users").doc(user.uid);
+
+  const docSnap = await userRef.get();
+
+  if (docSnap.exists) {
+    const data = docSnap.data();
+    document.getElementById("profileName").innerText = data.name || "";
+    
+    // Check if height and weight are set
+    if (data.height && data.weight && data.age && data.gender) {
+      // Calculate and display target calories
+      calculateAndDisplayTargetCalories(data);
+      document.getElementById("targetCaloriesCard").classList.remove("hidden");
+    } else {
+      // Show first time user modal
+      document.getElementById("firstTimeModal").classList.remove("hidden");
+    }
+  } else {
+    console.log("No profile data found for this user.");
+    document.getElementById("firstTimeModal").classList.remove("hidden");
+  }
+});
+
+function calculateAndDisplayTargetCalories(data) {
+  const height = data.height; // cm
+  const weight = data.weight; // kg
+  const age = data.age;
+  const gender = data.gender;
+  const activityLevel = data.activityLevel || 1.55; // default moderately active
+  
+  // Mifflin-St Jeor formula for BMR
+  let bmr;
+  if (gender === "male") {
+    bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+  } else {
+    bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+  }
+  
+  // TDEE = BMR * Activity Level
+  const tdee = Math.round(bmr * activityLevel);
+  
+  document.getElementById("targetCaloriesValue").textContent = tdee;
+}
+
+// Save height and weight
+document.getElementById("saveHeightWeightBtn").addEventListener("click", async () => {
+  const height = document.getElementById("heightInput").value;
+  const weight = document.getElementById("weightInput").value;
+  const targetWeight = document.getElementById("targetWeightInput").value;
+  const gender = document.getElementById("genderInput").value;
+  const activityLevel = document.getElementById("activityInput").value;
+  const targetWater = document.getElementById("targetWaterInput").value;
+  const targetProteinInput = document.getElementById("targetProteinInput").value;
+  const targetCarbsInput = document.getElementById("targetCarbsInput").value;
+  const targetFatInput = document.getElementById("targetFatInput").value;
+
+  if (!height || !weight || !targetWeight || !gender || !activityLevel || !targetWater) {
+    alert("Please fill in all required fields");
+    return;
+  }
+
+  const user = firebase.auth().currentUser;
+  const db = firebase.firestore();
+  const userRef = db.collection("users").doc(user.uid);
+  const userSnap = await userRef.get();
+
+  // --- SAFETY CHECK: Ensure profile exists ---
+  if (!userSnap.exists) {
+    await userRef.set({
+      age: null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    alert("Your profile was missing. Please enter your age on your profile page first.");
+    return;
+  }
+
+  const data = userSnap.data();
+  const age = data.age;
+
+  // --- SAFETY CHECK: Ensure age exists ---
+  if (age === null || age === undefined) {
+    alert("Please enter your age on your profile page first.");
+    return;
+  }
+
+  // --- Calculate target calories ---
+  let bmr;
+  if (gender === "male") {
+    bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+  } else {
+    bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+  }
+  const targetCalories = Math.round(bmr * activityLevel);
+
+  // --- Auto-calc macros if not provided ---
+  const targetProtein = targetProteinInput
+    ? parseFloat(targetProteinInput)
+    : Math.round((targetCalories * 0.30) / 4);
+
+  const targetCarbs = targetCarbsInput
+    ? parseFloat(targetCarbsInput)
+    : Math.round((targetCalories * 0.40) / 4);
+
+  const targetFat = targetFatInput
+    ? parseFloat(targetFatInput)
+    : Math.round((targetCalories * 0.30) / 9);
+
+  // --- Save profile updates ---
+  await userRef.update({
+    height: parseFloat(height),
+    weight: parseFloat(weight),
+    targetWeight: parseFloat(targetWeight),
+    gender: gender,
+    activityLevel: parseFloat(activityLevel),
+    targetWater: parseFloat(targetWater),
+    targetProtein: targetProtein,
+    targetCarbs: targetCarbs,
+    targetFat: targetFat,
+    targetCalories: targetCalories
+  });
+
+  // --- Update UI ---
+  document.getElementById("firstTimeModal").classList.add("hidden");
+
+  const updatedSnap = await userRef.get();
+  calculateAndDisplayTargetCalories(updatedSnap.data());
+
+  document.getElementById("targetCaloriesCard").classList.remove("hidden");
+  document.getElementById("closeProfileModalBtn").style.display = "block";
+});
+
+// Edit profile button
+document.getElementById("editProfileBtn").addEventListener("click", () => {
+  document.getElementById("firstTimeModal").classList.remove("hidden");
+  // Show the close button when editing (not first time)
+  document.getElementById("closeProfileModalBtn").style.display = "block";
+});
+
+// Close modal button
+document.getElementById("closeProfileModalBtn").addEventListener("click", () => {
+  document.getElementById("firstTimeModal").classList.add("hidden");
+});
+</script>
+
+<!-- OVERVIEW PANEL -->
+<section id="overviewPanel" class="overview-grid">
+  <h2>Today's Overview</h2>
+
+  <div class="overview-item">
+    <span>Calories</span>
+    <strong id="overviewCalories">0</strong>
+    <div class="overview-bar"><div id="calorieBar" class="bar-fill"></div></div>
+  </div>
+
+  <div class="overview-item">
+    <span>Protein</span>
+    <strong id="overviewProtein">0g</strong>
+    <div class="overview-bar"><div id="proteinBar" class="bar-fill"></div></div>
+  </div>
+
+  <div class="overview-item">
+    <span>Carbs</span>
+    <strong id="overviewCarbs">0g</strong>
+    <div class="overview-bar"><div id="carbBar" class="bar-fill"></div></div>
+  </div>
+
+  <div class="overview-item">
+    <span>Fat</span>
+    <strong id="overviewFat">0g</strong>
+    <div class="overview-bar"><div id="fatBar" class="bar-fill"></div></div>
+  </div>
+
+  <div class="overview-item">
+    <span>Water</span>
+    <strong id="overviewWater">0ml</strong>
+    <div class="overview-bar"><div id="waterBar" class="bar-fill"></div></div>
+  </div>
+
+</section>
 
   <!-- Access Blocker Modal -->
 <div id="accessBlocker" style="display:none;" class="modal">
@@ -63,10 +316,736 @@
   </div>
 </div>
 
+<!-- OVERVIEW JS -->
+<script>
+async function loadOverview(user) {
+  if (!user) return;
 
-  <!-- Your Firebase config -->
-  <script src="firebase.js"></script>
-  <script src="script.js"></script>
+  const db = firebase.firestore();
+  const today = new Date().toISOString().split("T")[0];
+
+  const logRef = db
+    .collection("users")
+    .doc(user.uid)
+    .collection("dailyLogs")
+    .doc(today);
+
+  const userRef = db.collection("users").doc(user.uid);
+
+  const logSnap = await logRef.get();
+  const userSnap = await userRef.get();
+
+  const userData = userSnap.data() || {};
+
+  // --- TARGETS ---
+  const targetCalories = userData.targetCalories || 2500;
+  const targetWater = userData.targetWater || 3000;
+  const targetProtein = userData.targetProtein || 150;
+  const targetCarbs = userData.targetCarbs || 200;
+  const targetFat = userData.targetFat || 65;
+
+  // --- DEFAULT VALUES IF NO LOG EXISTS ---
+  let calories = 0;
+  let protein = 0;
+  let carbs = 0;
+  let fat = 0;
+  let water = 0;
+
+  if (logSnap.exists) {
+    const data = logSnap.data();
+    calories = data.calories || 0;
+    protein = data.protein || 0;
+    carbs = data.carbs || 0;
+    fat = data.fat || 0;
+    water = data.water || 0;
+  }
+
+  // --- UPDATE UI ALWAYS ---
+  document.getElementById("overviewCalories").innerText = `${calories} / ${targetCalories}`;
+  document.getElementById("overviewProtein").innerText = `${protein} / ${targetProtein}g`;
+  document.getElementById("overviewCarbs").innerText = `${carbs} / ${targetCarbs}g`;
+  document.getElementById("overviewFat").innerText = `${fat} / ${targetFat}g`;
+  document.getElementById("overviewWater").innerText = `${water} / ${targetWater}ml`;
+
+  // --- UPDATE BARS ---
+  document.getElementById("calorieBar").style.width = `${Math.min((calories / targetCalories) * 100, 100)}%`;
+  document.getElementById("proteinBar").style.width = `${Math.min((protein / targetProtein) * 100, 100)}%`;
+  document.getElementById("carbBar").style.width = `${Math.min((carbs / targetCarbs) * 100, 100)}%`;
+  document.getElementById("fatBar").style.width = `${Math.min((fat / targetFat) * 100, 100)}%`;
+  document.getElementById("waterBar").style.width = `${Math.min((water / targetWater) * 100, 100)}%`;
+}
+
+firebase.auth().onAuthStateChanged(async (user) => {
+  if (!user) return;
+  document.getElementById("overviewPanel").style.display = "grid";
+  loadOverview(user);
+});
+</script>
+
+<!-- FOOD TRACKER PANEL -->
+<section id="foodTracker" class="food-panel-square">
+
+  <h2 class="panel-title">Food Tracker</h2>
+
+  <!-- Add Meal Button Square -->
+  <div id="addMealSquare" class="add-meal-square">
+    <span>+</span>
+  </div>
+
+  <!-- Today's Meals -->
+  <h3 class="subheading">Today's Meals</h3>
+  <div id="foodList" class="food-list"></div>
+
+  <!-- Recent Meals -->
+  <h3 class="subheading">Recent Meals</h3>
+<div id="recentMealsList" class="food-list"></div>
+
+</section>
+
+
+<!-- Add Meal Modal -->
+<div id="mealModal" class="modal hidden">
+  <div class="modal-content">
+
+    <h2 class="modal-title">Add Meal</h2>
+
+    <!-- Option Buttons -->
+    <div class="modal-options">
+      <button id="openQuickAdd" class="modal-btn">Quick Add Saved Meal</button>
+      <button id="openManualAdd" class="modal-btn">Add New Meal</button>
+    </div>
+
+
+      <!-- QUICK ADD LIST -->
+      <div id="quickAddList" class="hidden quick-list">
+        <input type="text" id="savedMealSearch" placeholder="Search saved meals..." class="search-input">
+      </div>
+
+
+
+    <!-- MANUAL ADD FORM -->
+    <div id="manualAddForm" class="hidden manual-form">
+
+      <input type="text" id="foodName" placeholder="Food name">
+
+      <input type="number" id="foodCalories" placeholder="Calories per 100g">
+      <input type="number" id="foodProtein" placeholder="Protein (g per 100g)">
+      <input type="number" id="foodCarbs" placeholder="Carbs (g per 100g)">
+      <input type="number" id="foodFat" placeholder="Fat (g per 100g)">
+
+      <!-- Portion selector -->
+      <input type="number" id="portionInput" placeholder="Portion size (g)" value="100">
+
+      <button id="addFoodBtn" class="confirm-btn">Add Meal</button>
+    </div>
+
+
+    <button id="closeModal" class="close-btn">Close</button>
+
+  </div>
+</div>
+
+<!-- FOOD TRACKER JS -->
+<script>
+firebase.auth().onAuthStateChanged(async (user) => {
+  if (!user) return;
+
+  const db = firebase.firestore();
+  const today = new Date().toISOString().split("T")[0];
+
+  const logRef = db.collection("users").doc(user.uid)
+    .collection("dailyLogs").doc(today);
+
+  const foodsRef = logRef.collection("foods");
+  const savedMealsRef = db.collection("savedMeals");
+
+
+  // UI Elements
+  const modal = document.getElementById("mealModal");
+  const addMealSquare = document.getElementById("addMealSquare");
+  const quickAddList = document.getElementById("quickAddList");
+  const manualAddForm = document.getElementById("manualAddForm");
+
+  const nameInput = document.getElementById("foodName");
+  const calInput = document.getElementById("foodCalories");
+  const proInput = document.getElementById("foodProtein");
+  const carbInput = document.getElementById("foodCarbs");
+  const fatInput = document.getElementById("foodFat");
+  const portionInput = document.getElementById("portionInput");
+
+  // Reset modal state
+    function resetModal() {
+      quickAddList.classList.add("hidden");
+      manualAddForm.classList.add("hidden");
+
+      // Remove ONLY meal rows, NOT the search bar
+      quickAddList.querySelectorAll(".saved-meal-row").forEach(row => row.remove());
+      quickAddList.querySelectorAll(".empty-text").forEach(msg => msg.remove());
+
+      nameInput.value = "";
+      calInput.value = "";
+      proInput.value = "";
+      carbInput.value = "";
+      fatInput.value = "";
+      portionInput.value = 100;
+    }
+
+  // Open modal
+  addMealSquare.addEventListener("click", () => {
+    resetModal();
+    modal.classList.remove("hidden");
+  });
+
+  // Close modal
+  document.getElementById("closeModal").addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+  // Show quick add list
+    document.getElementById("openQuickAdd").addEventListener("click", async () => {
+  resetModal();
+  quickAddList.classList.remove("hidden");
+
+  const searchBar = document.getElementById("savedMealSearch");
+
+  const snapshot = await savedMealsRef
+  .orderBy("verifiedPreset", "desc")
+  .orderBy("searchName")
+  .get();
+
+  // Remove old rows but keep search bar
+  quickAddList.querySelectorAll(".saved-meal-row").forEach(row => row.remove());
+  quickAddList.querySelectorAll(".empty-text").forEach(msg => msg.remove());
+
+  let allMeals = [];
+
+  snapshot.forEach(doc => {
+    const meal = doc.data();
+    const mealId = doc.id;
+    allMeals.push({ meal, mealId });
+  });
+
+  function renderMeals(meals) {
+    // Remove old rows/messages 
+    quickAddList.querySelectorAll(".saved-meal-row").forEach(row => row.remove());
+    quickAddList.querySelectorAll(".empty-text").forEach(msg => msg.remove());
+
+    if (meals.length === 0) {
+      const noResults = document.createElement("p");
+      noResults.className = "empty-text";
+      noResults.textContent = "No meals match your search.";
+      quickAddList.appendChild(noResults);
+      return;
+    }
+
+    meals.forEach(({ meal, mealId }) => {
+      const row = document.createElement("div");
+      row.className = "saved-meal-row";
+
+      // Build row DOM manually (safer + cleaner)
+      const info = document.createElement("div");
+      info.className = "saved-meal-info";
+
+      // Verified preset badge
+      const nameEl = document.createElement("strong");
+      nameEl.textContent = meal.name;
+
+      const badge = document.createElement("span");
+      if (meal.verifiedPreset === true) {
+        badge.className = "verified-badge";
+        badge.textContent = "✔ Preset";
+      }
+
+      const details = document.createElement("span");
+      details.textContent = ` (${meal.calories} cal per 100g)`;
+
+      info.appendChild(nameEl);
+      if (meal.verifiedPreset) info.appendChild(badge);
+      info.appendChild(details);
+
+      // Portion input
+      const portion = document.createElement("input");
+      portion.type = "number";
+      portion.className = "portion-field";
+      portion.value = 100;
+      portion.min = 1;
+
+      // Add button
+      const addBtn = document.createElement("button");
+      addBtn.className = "quick-add-btn";
+      addBtn.textContent = "Add";
+
+      addBtn.addEventListener("click", () => {
+        const grams = Number(portion.value) || 100;
+        const scale = grams / 100;
+
+        const scaledMeal = {
+          name: meal.name,
+          calories: Math.round(meal.calories * scale),
+          protein: Math.round(meal.protein * scale),
+          carbs: Math.round(meal.carbs * scale),
+          fat: Math.round(meal.fat * scale),
+          timestamp: Date.now()
+        };
+
+        addMeal(scaledMeal);
+        modal.classList.add("hidden");
+      });
+
+      // Delete button (only for creator)
+      let deleteBtn = null;
+      if (meal.createdBy === user.uid && meal.verifiedPreset !== true) {
+        deleteBtn = document.createElement("button");
+        deleteBtn.className = "delete-saved-btn";
+        deleteBtn.textContent = "X";
+
+        deleteBtn.addEventListener("click", async () => {
+          try {
+            await savedMealsRef.doc(mealId).delete();
+
+            // Remove from local array and re-render
+            allMeals = allMeals.filter(m => m.mealId !== mealId);
+
+            const query = searchBar.value.toLowerCase();
+            const filtered = allMeals.filter(({ meal }) =>
+              meal.name.toLowerCase().includes(query)
+            );
+
+            renderMeals(filtered);
+          } catch (err) {
+            console.error("Delete failed:", err);
+            alert("You can only delete meals you created.");
+          }
+        });
+      }
+
+      // Append everything to row
+      row.appendChild(info);
+      row.appendChild(portion);
+      row.appendChild(addBtn);
+      if (deleteBtn) row.appendChild(deleteBtn);
+
+      quickAddList.appendChild(row);
+    });
+  }
+
+  renderMeals(allMeals);
+
+  searchBar.addEventListener("input", () => {
+    const query = searchBar.value.toLowerCase();
+    const filtered = allMeals.filter(({ meal }) =>
+      meal.name.toLowerCase().includes(query)
+    );
+    renderMeals(filtered);
+  });
+});
+
+
+  // Show manual add form
+  document.getElementById("openManualAdd").addEventListener("click", () => {
+    resetModal();
+    manualAddForm.classList.remove("hidden");
+
+    const searchBar = document.getElementById("savedMealSearch");
+  });
+
+  // Add meal manually (with portion scaling)
+  document.getElementById("addFoodBtn").addEventListener("click", async () => {
+    const grams = Number(portionInput.value) || 100;
+    const scale = grams / 100;
+
+    const meal = {
+      name: nameInput.value.trim(),
+      calories: Math.round(Number(calInput.value) * scale),
+      protein: Math.round(Number(proInput.value) * scale),
+      carbs: Math.round(Number(carbInput.value) * scale),
+      fat: Math.round(Number(fatInput.value) * scale),
+      timestamp: Date.now()
+    };
+
+    if (!meal.name) return alert("Enter a food name");
+
+    await addMeal(meal);
+
+    // Save base meal (per 100g) if not already saved
+    const existing = await savedMealsRef
+      .where("name", "==", meal.name)
+      .limit(1)
+      .get();
+
+    if (existing.empty) {
+      await savedMealsRef.add({
+        name: nameInput.value.trim(),
+        calories: Number(calInput.value),
+        protein: Number(proInput.value),
+        carbs: Number(carbInput.value),
+        fat: Number(fatInput.value),
+        createdBy: user.uid
+      });
+    }
+
+    modal.classList.add("hidden");
+  });
+
+  // Add meal to today's log
+  async function addMeal(meal) {
+    await foodsRef.add(meal);
+    await updateDailyTotals();
+    loadFoods();
+    loadRecentMeals();
+    loadOverview(user);
+    saveRecentMeal(meal);
+    loadRecentMeals();
+  }
+
+  // Load today's meals
+  async function loadFoods() {
+    const list = document.getElementById("foodList");
+    list.innerHTML = "";
+
+    const snapshot = await foodsRef.orderBy("timestamp").get();
+
+    snapshot.forEach(doc => {
+      const food = doc.data();
+
+      const item = document.createElement("div");
+      item.className = "food-item";
+
+      item.innerHTML = `
+        <div>
+          <strong>${food.name}</strong><br>
+          ${food.calories} cal • ${food.protein}g P • ${food.carbs}g C • ${food.fat}g F
+        </div>
+        <button data-id="${doc.id}" class="delete-btn">Delete</button>
+      `;
+
+      item.querySelector("button").addEventListener("click", async () => {
+        await foodsRef.doc(doc.id).delete();
+        await updateDailyTotals();
+        loadFoods();
+        loadOverview(user);
+        loadRecentMeals();
+      });
+
+      list.appendChild(item);
+    });
+  }
+
+  // Save recent meal to localStorage
+  async function saveRecentMeal(meal) {
+  const recentRef = db.collection("users")
+    .doc(user.uid)
+    .collection("recentMeals");
+
+  // Add the meal
+  await recentRef.add({
+    ...meal,
+    timestamp: Date.now()
+  });
+
+  // Keep only the last 10
+  const snapshot = await recentRef
+    .orderBy("timestamp", "desc")
+    .get();
+
+  const docs = snapshot.docs;
+
+  if (docs.length > 10) {
+    const extra = docs.slice(10);
+    extra.forEach(doc => doc.ref.delete());
+  }
+}
+
+// Load recent meals
+async function loadRecentMeals() {
+  const recentRef = db.collection("users")
+    .doc(user.uid)
+    .collection("recentMeals");
+
+  const snapshot = await recentRef
+    .orderBy("timestamp", "desc")
+    .get();
+
+  const container = document.getElementById("recentMealsList");
+  container.innerHTML = "";
+
+  snapshot.forEach(doc => {
+    const meal = doc.data();
+
+    const item = document.createElement("div");
+    item.className = "food-item";
+
+    item.innerHTML = `
+      <div>
+        <strong>${meal.name}</strong><br>
+        ${meal.calories} cal • ${meal.protein}g P • ${meal.carbs}g C • ${meal.fat}g F
+      </div>
+      <button class="quick-add-btn">Add Again</button>
+    `;
+
+    item.querySelector(".quick-add-btn").addEventListener("click", () => {
+      addMeal({
+        ...meal,
+        timestamp: Date.now()
+      });
+    });
+
+    container.appendChild(item);
+  });
+}
+
+  // Update daily totals
+  async function updateDailyTotals() {
+    const snapshot = await foodsRef.get();
+
+    let totals = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+
+    snapshot.forEach(doc => {
+      const f = doc.data();
+      totals.calories += f.calories || 0;
+      totals.protein += f.protein || 0;
+      totals.carbs += f.carbs || 0;
+      totals.fat += f.fat || 0;
+    });
+
+    await logRef.set(totals, { merge: true });
+  }
+
+  loadFoods();
+});
+</script>
+
+
+<!-- WATER TRACKER PANEL -->
+<section id="waterTracker" class="water-panel">
+  <h2>Water Tracker</h2>
+
+  <div class="water-buttons">
+    <button data-amount="250">+250ml</button>
+    <button data-amount="500">+500ml</button>
+    <button data-amount="1000">+1L</button>
+  </div>
+
+  <div class="water-custom">
+    <input type="number" id="customWater" placeholder="Custom ml">
+    <button id="addCustomWater">Add</button>
+  </div>
+
+  <p class="water-total">Today's Water: <strong id="waterTotal">0ml</strong></p>
+</section>
+
+<!-- WATER TRACKER JS -->
+ <script>
+firebase.auth().onAuthStateChanged(async (user) => {
+  if (!user) return;
+
+  const db = firebase.firestore();
+  const today = new Date().toISOString().split("T")[0];
+
+  const logRef = db
+    .collection("users")
+    .doc(user.uid)
+    .collection("dailyLogs")
+    .doc(today);
+
+  async function loadWater() {
+    const snap = await logRef.get();
+    const data = snap.data() || {};
+    const water = data.water || 0;
+
+    document.getElementById("waterTotal").innerText = water + "ml";
+
+    const waterBar = document.getElementById("waterBar");
+    if (waterBar) {
+      waterBar.style.width = `${(water / 3000) * 100}%`;
+    }
+  }
+
+  async function addWater(amount) {
+    const snap = await logRef.get();
+    const data = snap.data() || {};
+    const current = data.water || 0;
+
+    await logRef.set(
+      { water: current + amount },
+      { merge: true }
+    );
+
+    loadWater();
+
+    // instantly refresh overview panel
+    loadOverview(user);
+  }
+
+  document.querySelectorAll(".water-buttons button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const amount = Number(btn.dataset.amount);
+      addWater(amount);
+    });
+  });
+
+  document.getElementById("addCustomWater").addEventListener("click", () => {
+    const amount = Number(document.getElementById("customWater").value);
+    if (amount > 0) addWater(amount);
+    document.getElementById("customWater").value = "";
+  });
+
+  loadWater();
+});
+</script>
+
+<!-- WEIGHT PANEL -->
+<section id="weightPanel" class="weight-panel">
+  <h2>Weight Tracker</h2>
+
+  <div class="weight-input-row">
+    <input type="number" id="weightInputPanel" placeholder="Enter weight (kg)">
+    <button id="addWeightBtn">Save</button>
+  </div>
+
+  <p class="weight-latest">
+    Latest Weight: <strong id="latestWeight">-- kg</strong>
+  </p>
+  
+  <!-- Weight Chart -->
+  <canvas id="weightChart" height="300"></canvas>
+</section>
+
+<!-- WEIGHT PANEL JS -->
+<script>
+firebase.auth().onAuthStateChanged(async (user) => {
+  if (!user) return;
+
+  const db = firebase.firestore();
+  const today = new Date().toISOString().split("T")[0];
+
+  const weightRef = db
+    .collection("users")
+    .doc(user.uid)
+    .collection("weightLogs")
+    .doc(today);
+
+  const weightCollection = db
+    .collection("users")
+    .doc(user.uid)
+    .collection("weightLogs");
+
+  const weightInput = document.getElementById("weightInputPanel");
+  const addWeightBtn = document.getElementById("addWeightBtn");
+  const latestWeightDisplay = document.getElementById("latestWeight");
+
+  let weightChart = null;
+
+  // Save today's weight
+  addWeightBtn.addEventListener("click", async () => {
+    const weight = Number(weightInput.value);
+
+    if (!weight || weight <= 0) {
+      alert("Enter a valid weight");
+      return;
+    }
+
+    await weightRef.set({
+      weight: weight,
+      timestamp: Date.now()
+    });
+
+    loadLatestWeight();
+    loadWeightChart();
+    weightInput.value = "";
+  });
+
+  // Load the most recent weight entry
+  async function loadLatestWeight() {
+    const snapshot = await weightCollection
+      .orderBy("timestamp", "desc")
+      .limit(1)
+      .get();
+
+    if (!snapshot.empty) {
+      const data = snapshot.docs[0].data();
+      latestWeightDisplay.innerText = data.weight + " kg";
+    }
+  }
+
+  // Load chart data
+  async function loadWeightChart() {
+    const snapshot = await weightCollection
+      .orderBy("timestamp", "asc")
+      .get();
+
+    const dates = [];
+    const weights = [];
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const date = new Date(data.timestamp).toLocaleDateString();
+      dates.push(date);
+      weights.push(data.weight);
+    });
+
+    const ctx = document.getElementById("weightChart");
+    if (!ctx) return; // Canvas not found
+    
+    // Destroy old chart before creating new one
+    if (weightChart) weightChart.destroy();
+
+    // Only create chart if there's data
+    if (weights.length > 0) {
+      weightChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: dates,
+          datasets: [{
+            label: "Weight (kg)",
+            data: weights,
+            borderColor: "#f9d423",
+            backgroundColor: "rgba(249, 212, 35, 0.2)",
+            borderWidth: 3,
+            tension: 0.3,
+            pointRadius: 5,
+            pointBackgroundColor: "#ff4e50",
+            pointBorderColor: "#fff",
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          interaction: {
+            intersect: false,
+            mode: 'index'
+          },
+          scales: {
+            x: {
+              grid: { color: "#444" },
+              ticks: { color: "#fff" }
+            },
+            y: {
+              grid: { color: "#444" },
+              ticks: { color: "#fff", stepSize: 0.5 }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: { color: "#fff" }
+            }
+          }
+        }
+      });
+    }
+  }
+
+  loadLatestWeight();
+  loadWeightChart();
+});
+</script>
 
 </body>
+
+<!-- Footer -->
+<page-footer>
+  <footer-text>Litness</footer-text>
+</page-footer>
+
 </html>

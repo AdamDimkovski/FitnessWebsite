@@ -8,15 +8,14 @@
   <link rel="icon" type="image/x-icon" href="images/favicon.png">
   <link rel="stylesheet" href="style-profile.css">
 
-  <!-- Firebase (compat version) -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-    <!-- Firebase config + global script -->
+  <!-- Firebase config + global script -->
   <script src="firebase.js"></script>
   <script src="script.js"></script>
-
 </head>
 
 <body>
@@ -38,48 +37,105 @@
 
   <!-- Profile Display Section -->
   <div class="profile-container">
-    <p><strong>Name:</strong> <span id="profileName"></span></p>
-    <p><strong>Age:</strong> <span id="profileAge"></span></p>
-    <p><strong>Goal:</strong> <span id="profileGoal"></span></p>
-    <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+
+    <h3>Personal Info</h3>
+    <div class="profile-grid">
+      <p><strong>Name:</strong> <span id="profileName"></span></p>
+      <p><strong>Age:</strong> <span id="profileAge"></span></p>
+      <p><strong>Goal:</strong> <span id="profileGoal"></span></p>
+      <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+    </div>
+
+    <hr>
+
+    <h3>Physical Stats</h3>
+    <div class="profile-grid">
+      <p><strong>Height:</strong> <span id="profileHeight"></span></p>
+      <p><strong>Weight:</strong> <span id="profileWeight"></span></p>
+      <p><strong>Target Weight:</strong> <span id="profileTargetWeight"></span></p>
+      <p><strong>Gender:</strong> <span id="profileGender"></span></p>
+      <p><strong>Activity Level:</strong> <span id="profileActivity"></span></p>
+    </div>
+
+    <hr>
+
+    <h3>Daily Targets</h3>
+    <div class="profile-grid">
+      <p><strong>Calories:</strong> <span id="targetCalories"></span></p>
+      <p><strong>Protein:</strong> <span id="targetProtein"></span> g</p>
+      <p><strong>Carbs:</strong> <span id="targetCarbs"></span> g</p>
+      <p><strong>Fat:</strong> <span id="targetFat"></span> g</p>
+      <p><strong>Water:</strong> <span id="targetWater"></span> L</p>
+    </div>
+
+    <hr>
+
+    <h3>Account Info</h3>
+    <p><strong>Member Since:</strong> <span id="profileCreated"></span></p>
   </div>
 
   <!-- Profile JS -->
   <script>
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        const db = firebase.firestore();
-
-        db.collection("users").doc(user.uid).get().then((doc) => {
-          if (doc.exists) {
-            const data = doc.data();
-
-            document.getElementById("profileName").innerText = data.name || "";
-            document.getElementById("profileAge").innerText = data.age || "";
-            document.getElementById("profileGoal").innerText = formatGoal(data.goal);
-            document.getElementById("profileEmail").innerText = data.email || user.email;
-          } else {
-            console.log("No profile data found for this user.");
-          }
-        });
-      } else {
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (!user) {
         window.location.href = "log-in.html";
+        return;
       }
-    })
-    function formatGoal(goal) {
-    return goal
-    .replace(/_/g, " ")                 // turn underscores into spaces
-    .replace(/\b\w/g, c => c.toUpperCase()); // capitalize each word
-};
+
+      const db = firebase.firestore();
+      const docRef = db.collection("users").doc(user.uid);
+      const docSnap = await docRef.get();
+
+      if (!docSnap.exists) {
+        console.log("No profile data found.");
+        return;
+      }
+
+      const data = docSnap.data();
+
+      // PERSONAL INFO
+      document.getElementById("profileName").innerText = data.name ?? "—";
+      document.getElementById("profileAge").innerText = data.age ?? "—";
+      document.getElementById("profileGoal").innerText = formatGoal(data.goal);
+      document.getElementById("profileEmail").innerText = data.email ?? user.email;
+
+      // PHYSICAL STATS
+      document.getElementById("profileHeight").innerText = data.height ?? "—";
+      document.getElementById("profileWeight").innerText = data.weight ?? "—";
+      document.getElementById("profileTargetWeight").innerText = data.targetWeight ?? "—";
+      document.getElementById("profileGender").innerText = data.gender ?? "—";
+      document.getElementById("profileActivity").innerText = formatGoal(data.activityLevel);
+
+      // DAILY TARGETS
+      document.getElementById("targetCalories").innerText = data.targetCalories ?? "—";
+      document.getElementById("targetProtein").innerText = data.targetProtein ?? "—";
+      document.getElementById("targetCarbs").innerText = data.targetCarbs ?? "—";
+      document.getElementById("targetFat").innerText = data.targetFat ?? "—";
+
+      // Convert water from mL to L if needed
+      const water = typeof data.targetWater === "number" ? (data.targetWater / 1000).toFixed(1) : data.targetWater ?? "—";
+      document.getElementById("targetWater").innerText = water;
+
+      // ACCOUNT CREATION DATE
+      if (data.createdAt) {
+        const date = data.createdAt.toDate().toLocaleDateString();
+        document.getElementById("profileCreated").innerText = date;
+      } else {
+        document.getElementById("profileCreated").innerText = "—";
+      }
+    });
+
+    function formatGoal(value) {
+      if (typeof value !== "string") return "Not set";
+      return value.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    }
   </script>
 
+  <!-- Footer -->
+  <page-footer>
+    <a>Made by Adam Dimkovski</a><br>
+    <footer-text>Litness</footer-text>
+  </page-footer>
 
 </body>
-
-<!-- Footer -->
-<page-footer>
-  <a>Made by Adam Dimkovski</a><br>
-  <footer-text>Litness Fitness</footer-text>
-</page-footer>
-  
 </html>

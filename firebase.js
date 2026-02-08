@@ -1,5 +1,5 @@
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  apiKey: "AIzaSyCXJGaB65s--mfTGf64vd5EGzEfUHr8VEw",
   authDomain: "litnessfitness-72cb2.firebaseapp.com",
   projectId: "litnessfitness-72cb2",
   storageBucket: "litnessfitness-72cb2.appspot.com",
@@ -9,4 +9,8 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
+// Global references
 const auth = firebase.auth();
+const db = firebase.firestore();
+

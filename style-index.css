@@ -27,10 +27,6 @@ nav {
   font-weight: 550;
 }
 
-nav a:visited {
-  color: #ffffff;
-}
-
 nav a:hover {
   color: #dddddd; /* optional: subtle hover effect */
 }
@@ -39,11 +35,14 @@ nav a:hover {
 body {
   font-family: 'Montserrat', sans-serif;
   color:#ffffff;
+  font-weight: bold;
   background: linear-gradient(90deg,rgba(253, 29, 29, 1) 0%, rgba(252, 176, 69, 1) 100%);
   text-align: center;
-  padding: 150px;
+  padding-top: 180px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 40px;
   overflow-y: scroll;
-  margin: 0;
 }
 
 nav-content {
@@ -209,7 +208,7 @@ page-footer {
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 10%;
+  height: 8%;
   background-color: #333333;
   color: white;
   text-align: center;
@@ -225,7 +224,7 @@ page-footer a {
 footer-text {
   background-color: transparent; /* removes any background */
   color: #ffffff;                /* keeps the text visible */
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 700;
   font-family: 'Montserrat', sans-serif;
   text-align: center;
@@ -233,5 +232,57 @@ footer-text {
   animation: fadeInUp 1.5s ease-out;
 }
 
+.signupSection {
+  margin-top: 20px;
+  padding: 5px 20px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  display: block;
+  max-width: 100%;
+  box-sizing: border-box;
+}
 
+.signupSection.hidden {
+  display: none !important;
+}
 
+.signupSection h1 {
+  margin-bottom: 20px;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.signupSection a {
+  text-decoration: none;
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.signupSection button {
+  background: linear-gradient(to right, #ff4e50, #f9d423);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 78, 80, 0.4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.signupSection button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255, 78, 80, 0.4);
+  background: linear-gradient(to right, #ff4e50, #f9d423);
+  background-color: unset;
+}
+
+.hidden {
+  display: none !important;
+}

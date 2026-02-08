@@ -1,10 +1,8 @@
-// scripts.js
-
 // --- SIGN UP ---
 const signupForm = document.getElementById('signupForm');
 
 if (signupForm) {
-  signupForm.addEventListener('submit', (e) => {
+  signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const name = document.getElementById('signupName').value.trim();
@@ -13,92 +11,136 @@ if (signupForm) {
     const email = document.getElementById('signupEmail').value.trim();
     const password = document.getElementById('signupPassword').value;
 
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    try {
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
 
-    auth.createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
+      await user.sendEmailVerification();
+      alert("Verification email sent! Please check your inbox.");
 
-        // Save extra details in Firestore
-        return db.collection("users").doc(user.uid).set({
-          name: name,
-          age: age,
-          goal: goal,
-          email: email,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      })
-      .then(() => {
-        alert("Signup successful!");
-        window.location.href = "index.html";
-      })
-      .catch((error) => {
-        console.error(error.code, error.message);
-        alert("Error: " + error.message);
+      await db.collection("users").doc(user.uid).set({
+        name,
+        age,
+        goal,
+        email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
+
+      alert("Signup successful! Please verify your email before logging in.");
+      window.location.href = "verify.html";
+
+    } catch (error) {
+      console.error(error.code, error.message);
+      alert("Error: " + error.message);
+    }
   });
 }
 
 // --- LOG IN ---
 const loginForm = document.getElementById('loginForm');
+
 if (loginForm) {
-  loginForm.addEventListener('submit', (e) => {
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
-    auth.signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        alert("Login successful! " + user.email);
-        window.location.href = "index.html"; // redirect after login
-      })
-      .catch((error) => {
-        console.error(error.code, error.message);
-        alert("Error: " + error.message);
-      });
+    try {
+      const userCredential = await auth.signInWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+
+      // Refresh user data (still good practice)
+      await user.reload();
+
+      // No verification check anymore
+
+      alert("Login successful! " + user.email);
+      window.location.href = "index.html";
+
+    } catch (error) {
+      console.error(error.code, error.message);
+      alert("Error: " + error.message);
+    }
   });
 }
 
 // --- NAV BAR TOGGLE ---
-firebase.auth().onAuthStateChanged((user) => {
+function updateUIForAuthState(user) {
   const signupLink = document.getElementById("signupLink");
   const loginLink = document.getElementById("loginLink");
   const logoutLink = document.getElementById("logoutLink");
-  const profileLink = document.getElementById("profileLink"); // new profile link
+  const profileLink = document.getElementById("profileLink");
+  const signupSection = document.querySelector(".signupSection");
 
   if (user) {
     if (signupLink) signupLink.style.display = "none";
     if (loginLink) loginLink.style.display = "none";
     if (logoutLink) logoutLink.style.display = "inline-block";
-    if (profileLink) profileLink.style.display = "inline-block"; // show profile when logged in
+    if (profileLink) profileLink.style.display = "inline-block";
+
+    if (signupSection) signupSection.classList.add("hidden");
+
   } else {
     if (signupLink) signupLink.style.display = "inline-block";
     if (loginLink) loginLink.style.display = "inline-block";
     if (logoutLink) logoutLink.style.display = "none";
-    if (profileLink) profileLink.style.display = "none"; // hide profile when logged out
-  }
-});
+    if (profileLink) profileLink.style.display = "none";
 
+    if (signupSection) signupSection.classList.remove("hidden");
+  }
+}
 
 // --- LOG OUT ---
-const logoutLink = document.getElementById("logoutLink");
-if (logoutLink) {
-  logoutLink.addEventListener("click", (e) => {
+function setupLogout() {
+  const logoutLink = document.getElementById("logoutLink");
+  if (!logoutLink) return;
+
+  logoutLink.replaceWith(logoutLink.cloneNode(true));
+  const freshLogoutLink = document.getElementById("logoutLink");
+
+  freshLogoutLink.addEventListener("click", (e) => {
     e.preventDefault();
-    auth.signOut().then(() => {
-      alert("Logged out successfully!");
-      window.location.href = "index.html"; // redirect after logout
-    });
+
+    firebase.auth().signOut()
+      .then(() => {
+        window.location.href = "index.html";
+      })
+      .catch((error) => {
+        console.error("Logout error:", error);
+        window.location.href = "index.html";
+      });
   });
 }
 
-// --- PAGE BLOCKER ---
-firebase.auth().onAuthStateChanged((user) => {
+// --- UNIFIED GLOBAL AUTH LISTENER (NO LOOPS, NO DOUBLE REDIRECTS) ---
+firebase.auth().onAuthStateChanged(async (user) => {
+  const currentPage = window.location.pathname;
+
+  updateUIForAuthState(user);
+  setupLogout();
+
+  // If not logged in → show blocker if present
   if (!user) {
     const blocker = document.getElementById("accessBlocker");
     if (blocker) blocker.style.display = "flex";
+    return;
   }
+
+  // Always refresh user data
+  await user.reload();
+
+  // Never redirect on verify page
+  if (currentPage.includes("verify.html")) return;
+
+  // Never redirect on home page (prevents infinite loop)
+  if (currentPage.includes("index.html")) return;
+
+  // If user is NOT verified → send to verify page
+  if (!user.emailVerified) {
+    window.location.href = "verify.html";
+    return;
+  }
+
+  // If user IS verified → allow access to protected pages
 });

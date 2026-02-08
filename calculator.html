@@ -140,52 +140,52 @@
   <!-- Extra Settings -->
   <div class="extra-settings">
 
-    <div class="label-with-tooltip">
-      <label>Extra Settings</label>
-      <span class="tooltip">❓
-        <span class="tooltiptext">Adjust your preferred units for height and weight.</span>
-      </span>
-    </div>
-
-    <button class="collapsible-btn">Toggle Extra Settings</button>
-
-    <div class="collapsible-content">
-      <fieldset>
-        <legend>Unit Preferences</legend>
-
-        <!-- Weight Unit -->
-        <div class="input-group">
-          <div class="label-with-tooltip">
-            <label>Weight Unit</label>
-            <span class="tooltip">❓
-              <span class="tooltiptext">Choose whether to enter weight in kg or lbs.</span>
-            </span>
-          </div>
-          <div class="toggle-group" id="weight-toggle">
-            <button type="button" class="toggle-btn active" data-unit="kg">kg</button>
-            <button type="button" class="toggle-btn" data-unit="lbs">lbs</button>
-          </div>
-        </div>
-
-        <!-- Height Unit -->
-        <div class="input-group">
-          <div class="label-with-tooltip">
-            <label>Height Unit</label>
-            <span class="tooltip">❓
-              <span class="tooltiptext">Choose whether to enter height in cm or inches.</span>
-            </span>
-          </div>
-          <div class="toggle-group" id="height-toggle">
-            <button type="button" class="toggle-btn active" data-unit="cm">cm</button>
-            <button type="button" class="toggle-btn" data-unit="inches">inches</button>
-          </div>
-        </div>
-
-      </fieldset>
-    </div>
+  <div class="settings-header">
+    <label>Extra Settings</label>
+    <span class="tooltip">❓
+      <span class="tooltiptext">Adjust your preferred units for height and weight.</span>
+    </span>
   </div>
 
-</div> <!-- end calculator-card -->
+  <button class="collapsible-btn">Toggle Extra Settings</button>
+
+  <div class="collapsible-content">
+    <fieldset class="settings-fieldset">
+      <legend>Unit Preferences</legend>
+
+      <!-- Weight Unit -->
+      <div class="settings-row">
+        <div class="label-with-tooltip">
+          <label>Weight Unit</label>
+          <span class="tooltip">❓
+            <span class="tooltiptext">Choose whether to enter weight in kg or lbs.</span>
+          </span>
+        </div>
+
+        <div class="toggle-group" id="weight-toggle">
+          <button type="button" class="toggle-btn active" data-unit="kg">kg</button>
+          <button type="button" class="toggle-btn" data-unit="lbs">lbs</button>
+        </div>
+      </div>
+
+      <!-- Height Unit -->
+      <div class="settings-row">
+        <div class="label-with-tooltip">
+          <label>Height Unit</label>
+          <span class="tooltip">❓
+            <span class="tooltiptext">Choose whether to enter height in cm or inches.</span>
+          </span>
+        </div>
+
+        <div class="toggle-group" id="height-toggle">
+          <button type="button" class="toggle-btn active" data-unit="cm">cm</button>
+          <button type="button" class="toggle-btn" data-unit="inches">inches</button>
+        </div>
+      </div>
+
+    </fieldset>
+  </div>
+</div> <!-- end extra-settings -->
 
 <div id="resultBox" class="result-box">
   <p id="resultOutput"></p>
@@ -309,8 +309,9 @@ function calculateMain() {
 <!-- Footer -->
 <page-footer>
   <a>Made by Adam Dimkovski</a><br>
-  <footer-text>Litness Fitness</footer-text>
+  <footer-text>Litness</footer-text>
 </page-footer>
 
 </body>
+
 </html>

@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Litness Fitness</title>
+  <title>Litness</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="images/favicon.png">
@@ -52,7 +52,7 @@
 
   <!-- Hero Section -->
   <index-body> 
-    <h1>Litness Fitness</h1>
+    <h1>Litness</h1>
     <p>Track workouts, get tips, and stay healthy!</p>
   </index-body>
 
@@ -74,21 +74,28 @@
   </div>
 
   <!-- Sign up Section -->
-   <h1> Sign up for a account today to start using our online trackers! </h1>
-    <a href="sign-up.html"><Button> Sign up </Button><a href="log-in.html"><Button> Log In </Button></a>
-
-
+<div class="signupSection" id="signupSection">
+  <h1>Sign up for an account today to start using our online trackers!</h1>
+  <a href="sign-up.html"><button>Sign up</button></a>
+  <a href="log-in.html"><button>Log In</button></a>
+</div>
 
   <!-- Scripts -->
   <script src="firebase.js"></script>
   <script src="script.js"></script>
+
+<script>
+auth.onAuthStateChanged(user => {
+updateUIForAuthState(user);
+});
+</script>
 
 </body>
 
 <!-- Footer -->
 <page-footer>
   <a>Made by Adam Dimkovski</a><br>
-  <footer-text>Litness Fitness</footer-text>
+  <footer-text>Litness</footer-text>
 </page-footer>
 
 </html>

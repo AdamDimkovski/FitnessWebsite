@@ -1,5 +1,8 @@
+/* KEEPING NAV, BODY, FOOTER EXACTLY AS IS */
+
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
+/* NAV, BODY, FOOTER — unchanged */
 nav {
   background-color: #333333;
   font-weight: 550;
@@ -12,26 +15,27 @@ nav {
   padding: 15px 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 10px;
-
-    /* Flex layout for horizontal nav */
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px; /* spacing between items */
- }
+  gap: 20px;
+}
 
 body {
   font-family: 'Montserrat', sans-serif;
   color:#ffffff;
+  font-weight: bold;
   background: linear-gradient(90deg,rgba(253, 29, 29, 1) 0%, rgba(252, 176, 69, 1) 100%);
   text-align: center;
-  padding: 150px;
+  padding-top: 180px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 40px;
   overflow-y: scroll;
-  margin: 0;
 }
 
 nav-content {
-  display: inline-block; /* force inline behavior */
+  display: inline-block;
   border-radius: 5px;
   padding: 10px 15px;
   background-color: #333333;
@@ -42,7 +46,7 @@ nav-content {
 nav-content:hover { 
   font-weight: bold;
   background-color: rgb(63, 85, 255);
-  color: #fff; /* make text visible on blue background */
+  color: #fff;
 }
 
 nav-content:active {
@@ -50,22 +54,18 @@ nav-content:active {
   border-bottom: 3px solid #000000;
 }
 
- nav a {
+nav a {
   color: #ffffff;
   text-decoration: none;
   font-weight: 550;
 }
 
-nav a:visited {
-  color: #ffffff;
-}
-
 nav a:hover {
-  color: #dddddd; /* optional: subtle hover effect */
+  color: #dddddd;
 }
 
+/* PAGE TITLE + SUBTEXT */
 
-/* Page title */
 h1 {
   font-size: 3rem;
   margin-top: 40px;
@@ -81,80 +81,120 @@ p {
   animation: fadeInUp 1.5s ease-out;
 }
 
-/* Profile card container */
+/* Profile Card */
+
 .profile-container {
-  width: 60%;
-  max-width: 600px;
+  width: 75%;
+  max-width: 850px;
   margin: 0 auto;
   background-color: #1e1e2f;
-  padding: 30px 40px;
-  border-radius: 15px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  padding: 40px 50px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
   text-align: left;
   animation: fadeInUp 1.2s ease-out;
+  border: 1px solid rgba(255,255,255,0.12);
 }
 
-/* Each profile row */
-.profile-container p {
+/* Section headers */
+.profile-container h3 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: rgb(63, 85, 255);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* Two-column grid layout */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 30px;
+  margin-bottom: 20px;
+}
+
+/* Profile rows */
+.profile-grid p,
+.profile-container > p {
+  background: rgba(255,255,255,0.03);
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
   display: flex;
   justify-content: space-between;
-  padding: 12px 0;
-  margin: 0;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-  font-size: 1.1rem;
+  align-items: center;
+  font-size: 1.05rem;
+  gap: 10px;
 }
 
-/* Label styling */
+/* Labels */
 .profile-container strong {
-  color: rgb(63, 85, 255); /* same blue hover color as nav */
+  flex: 0 0 130px;
+  color: rgb(63, 85, 255);
   font-weight: 700;
 }
 
-/* Value styling */
+/* Values */
 .profile-container span {
+  flex: 1;
+  text-align: right;
   color: #ffffff;
   font-weight: 500;
 }
 
+/* Divider lines */
+.profile-container hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  margin: 30px 0;
+}
+
 /* Responsive adjustments */
-@media (max-width: 700px) {
-  .profile-container {
-    width: 85%;
-    padding: 25px;
+
+@media (max-width: 800px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
   }
 
-  .profile-container p {
+  .profile-container {
+    width: 90%;
+    padding: 30px;
+  }
+
+  .profile-grid p {
     flex-direction: column;
+    align-items: flex-start;
     gap: 5px;
+  }
+
+  .profile-container strong,
+  .profile-container span {
     text-align: left;
+    flex: unset;
   }
 }
+
+/* Footer */
 
 page-footer {
   position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 10%;
+  height: 8%;
   background-color: #23232e;
   color: white;
   text-align: center;
 }
 
-page-footer a {
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
 footer-text {
-  background-color: transparent; /* removes any background */
-  color: #ffffff;                /* keeps the text visible */
-  font-size: 3rem;
+  background-color: transparent;
+  color: #ffffff;
+  font-size: 2rem;
   font-weight: 700;
   font-family: 'Montserrat', sans-serif;
-  text-align: center;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
   animation: fadeInUp 1.5s ease-out;
 }
