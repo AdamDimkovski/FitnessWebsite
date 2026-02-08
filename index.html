@@ -23,55 +23,93 @@
 <body>
 
 <!-- Navigation Bar -->
-<nav>
-    <nav-content>
-    <a href="index.html">Home</a>
-    </nav-content> 
-    <nav-content>
-    <a href="calculator.html">Maintenance Calculator</a>
-    </nav-content>
-    <nav-content>
-    <a href="food.html">Diet Tracker</a>
-    </nav-content>
-    <nav-content>
-    <a href="exercise.html">Workout Tracker</a>
-    </nav-content>
-    <nav-content id="signupLink">
-    <a href="sign-up.html">Sign Up</a>
-    </nav-content>
-    <nav-content id="loginLink">
-    <a href="log-in.html">Log In</a>
-    </nav-content>
-    <nav-content id="profileLink" style="display:none;">
-    <a href="profile.html">Profile</a>
-    </nav-content>
-    <nav-content id="logoutLink" style="display:none;">
-    <a href="#">Log Out</a>
-    </nav-content>
+<nav class="navbar">
+  <ul class="nav-list">
+
+    <li class="nav-item">
+      <a href="index.html">Home</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="calculator.html">Maintenance Calculator</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="food.html">Diet Tracker</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="exercise.html">Workout Tracker</a>
+    </li>
+
+    <!-- Auth‑controlled items -->
+    <li class="nav-item" id="signupLink">
+      <a href="sign-up.html">Sign Up</a>
+    </li>
+
+    <li class="nav-item" id="loginLink">
+      <a href="log-in.html">Log In</a>
+    </li>
+
+    <li class="nav-item" id="profileLink">
+      <a href="profile.html">Profile</a>
+    </li>
+
+    <li class="nav-item" id="logoutLink">
+      <a href="#">Log Out</a>
+    </li>
+
+  </ul>
 </nav>
 
   <!-- Hero Section -->
-  <index-body> 
+<!-- Hero Section -->
+<index-body>
+  <div class="hero-content">
+    <span class="hero-badge">All-in-one fitness platform</span>
     <h1>Litness</h1>
-    <p>Track workouts, get tips, and stay healthy!</p>
-  </index-body>
+    <p>
+      Track workouts, monitor nutrition, and calculate calories -
+      all in one clean, powerful dashboard.
+    </p>
 
-  <!-- Links to different functions of the website -->
-  <h1> Some of our features include... </h1>
-  <div class="feature-row">
-    <div class="feature-box">
-      <img src="images/calculator.jpg" alt="Calorie Calculator">
-      <a href="calculator.html"><button>Try our FREE Calorie Calculator!</button></a>
-    </div>
-    <div class="feature-box">
-      <img src="images/workout.jpg" alt="Workout Tracker">
-      <a href="exercise.html"><button>Track your workouts with workout tracker!</button></a>
-    </div>
-    <div class="feature-box">
-      <img src="images/foodindex.jpg" alt="Diet Tracker">
-      <a href="food.html"><button>Track your nutrition with our calorie tracker!</button></a>
+    <div class="hero-actions">
+      <a href="sign-up.html"><button class="primary-btn">Get Started Free</button></a>
+      <a href="calculator.html"><button class="secondary-btn">Try Calculator</button></a>
     </div>
   </div>
+</index-body>
+
+<!-- Features Section -->
+<section class="features-section">
+  <h2 class="section-title">Everything you need to stay consistent</h2>
+  <p class="section-subtitle">
+    Designed to help you train smarter, eat better, and stay accountable.
+  </p>
+
+  <div class="feature-row">
+    <div class="feature-box premium-card">
+      <img src="images/calculator.jpg" alt="Calorie Calculator">
+      <h3>Calorie Calculator</h3>
+      <p>Instantly calculate your daily maintenance calories and goals.</p>
+      <a href="calculator.html"><button>Open Calculator</button></a>
+    </div>
+
+    <div class="feature-box premium-card">
+      <img src="images/workout.jpg" alt="Workout Tracker">
+      <h3>Workout Tracker</h3>
+      <p>Log exercises, sets, and progress over time.</p>
+      <a href="exercise.html"><button>Track Workouts</button></a>
+    </div>
+
+    <div class="feature-box premium-card">
+      <img src="images/foodindex.jpg" alt="Diet Tracker">
+      <h3>Diet Tracker</h3>
+      <p>Track calories and nutrition to support your training.</p>
+      <a href="food.html"><button>Track Nutrition</button></a>
+    </div>
+  </div>
+</section>
 
   <!-- Sign up Section -->
 <div class="signupSection" id="signupSection">
@@ -94,7 +132,6 @@ updateUIForAuthState(user);
 
 <!-- Footer -->
 <page-footer>
-  <a>Made by Adam Dimkovski</a><br>
   <footer-text>Litness</footer-text>
 </page-footer>
 

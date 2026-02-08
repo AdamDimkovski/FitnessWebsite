@@ -67,80 +67,53 @@ if (loginForm) {
 
 // --- NAV BAR TOGGLE ---
 function updateUIForAuthState(user) {
-  const signupLink = document.getElementById("signupLink");
-  const loginLink = document.getElementById("loginLink");
-  const logoutLink = document.getElementById("logoutLink");
-  const profileLink = document.getElementById("profileLink");
-  const signupSection = document.querySelector(".signupSection");
-
-  if (user) {
-    if (signupLink) signupLink.style.display = "none";
-    if (loginLink) loginLink.style.display = "none";
-    if (logoutLink) logoutLink.style.display = "inline-block";
-    if (profileLink) profileLink.style.display = "inline-block";
-
-    if (signupSection) signupSection.classList.add("hidden");
-
-  } else {
-    if (signupLink) signupLink.style.display = "inline-block";
-    if (loginLink) loginLink.style.display = "inline-block";
-    if (logoutLink) logoutLink.style.display = "none";
-    if (profileLink) profileLink.style.display = "none";
-
-    if (signupSection) signupSection.classList.remove("hidden");
-  }
+  document.body.classList.toggle("logged-in", !!user);
 }
 
 // --- LOG OUT ---
 function setupLogout() {
   const logoutLink = document.getElementById("logoutLink");
-  if (!logoutLink) return;
+  if (!logoutLink || logoutLink.dataset.bound === "true") return;
 
-  logoutLink.replaceWith(logoutLink.cloneNode(true));
-  const freshLogoutLink = document.getElementById("logoutLink");
+  logoutLink.dataset.bound = "true";
 
-  freshLogoutLink.addEventListener("click", (e) => {
+  logoutLink.addEventListener("click", (e) => {
     e.preventDefault();
 
     firebase.auth().signOut()
       .then(() => {
-        window.location.href = "index.html";
+        window.location.replace("index.html");
       })
       .catch((error) => {
         console.error("Logout error:", error);
-        window.location.href = "index.html";
+        window.location.replace("index.html");
       });
   });
 }
 
-// --- UNIFIED GLOBAL AUTH LISTENER (NO LOOPS, NO DOUBLE REDIRECTS) ---
-firebase.auth().onAuthStateChanged(async (user) => {
-  const currentPage = window.location.pathname;
+// --- UNIFIED GLOBAL AUTH LISTENER ---
+firebase.auth().onAuthStateChanged((user) => {
+  const path = window.location.pathname;
 
+  // Update UI immediately (instant visual response)
   updateUIForAuthState(user);
   setupLogout();
 
-  // If not logged in → show blocker if present
+  // Logged out → block protected content
   if (!user) {
     const blocker = document.getElementById("accessBlocker");
-    if (blocker) blocker.style.display = "flex";
+    if (blocker) blocker.classList.remove("hidden");
     return;
   }
 
-  // Always refresh user data
-  await user.reload();
+  // Pages that never redirect
+  const isHome = path === "/" || path.endsWith("index.html");
+  const isVerify = path.endsWith("verify.html");
 
-  // Never redirect on verify page
-  if (currentPage.includes("verify.html")) return;
+  if (isHome || isVerify) return;
 
-  // Never redirect on home page (prevents infinite loop)
-  if (currentPage.includes("index.html")) return;
-
-  // If user is NOT verified → send to verify page
+  // Redirect unverified users
   if (!user.emailVerified) {
-    window.location.href = "verify.html";
-    return;
+    window.location.replace("verify.html");
   }
-
-  // If user IS verified → allow access to protected pages
 });
