@@ -23,83 +23,125 @@
 <body>
 
 <!-- Navigation Bar -->
-<nav>
-    <nav-content>
-    <a href="index.html">Home</a>
-    </nav-content> 
-    <nav-content>
-    <a href="calculator.html">Maintenance Calculator</a>
-    </nav-content>
-    <nav-content>
-    <a href="food.html">Diet Tracker</a>
-    </nav-content>
-    <nav-content>
-    <a href="exercise.html">Workout Tracker</a>
-    </nav-content>
-    <nav-content id="signupLink">
-    <a href="sign-up.html">Sign Up</a>
-    </nav-content>
-    <nav-content id="loginLink">
-    <a href="log-in.html">Log In</a>
-    </nav-content>
-    <nav-content id="logoutLink" style="display:none;">
-    <a href="#">Log Out</a>
-    </nav-content>
+<nav class="navbar">
+  <ul class="nav-list">
+
+    <li class="nav-item">
+      <a href="index.html">Home</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="calculator.html">Maintenance Calculator</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="food.html">Diet Tracker</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="exercise.html">Workout Tracker</a>
+    </li>
+
+    <!-- Auth‑controlled items -->
+    <li class="nav-item" id="signupLink">
+      <a href="sign-up.html">Sign Up</a>
+    </li>
+
+    <li class="nav-item" id="loginLink">
+      <a href="log-in.html">Log In</a>
+    </li>
+
+    <li class="nav-item" id="profileLink">
+      <a href="profile.html">Profile</a>
+    </li>
+
+    <li class="nav-item" id="logoutLink">
+      <a href="#">Log Out</a>
+    </li>
+
+  </ul>
 </nav>
 
-<h1>Log In</h1>
-  <p>Enter your account details below.</p>
+<!-- HEADER -->
+<header class="auth-header">
+  <h1>Welcome back</h1>
+  <p>Log in to continue your fitness journey.</p>
+</header>
 
-<div class="login-block">
+<!-- LOGIN CARD -->
+<div class="auth-card">
   <form id="loginForm">
-    <input type="email" id="loginEmail" placeholder="Email" required>
-    <input type="password" id="loginPassword" placeholder="Password" required>
-    <label>
-      Show Password <input type="checkbox" onclick="togglePassword()">
-    </label>
 
-    <script>
-      function togglePassword() {
-        var x = document.getElementById("loginPassword");
-        x.type = (x.type === "password") ? "text" : "password";
-      }
+    <div class="form-group">
+      <label for="loginEmail">Email</label>
+      <input
+        type="email"
+        id="loginEmail"
+        placeholder="Enter your email"
+        required
+      >
+    </div>
 
-      // Handle login
-      document.getElementById("loginForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        var email = document.getElementById("loginEmail").value;
-        var password = document.getElementById("loginPassword").value;
+    <div class="form-group">
+      <label for="loginPassword">Password</label>
+      <input
+        type="password"
+        id="loginPassword"
+        placeholder="Enter your password"
+        required
+      >
+    </div>
 
-        firebase.auth().signInWithEmailAndPassword(email, password)
-          .then((userCredential) => {
-            // Logged in
-            alert("Login successful!");
-            window.location.href = "index.html"; // redirect after login
-          })
-          .catch((error) => {
-            alert(error.message);
-          });
-      });
-    </script>
+    <div class="form-options">
+      <label class="checkbox">
+        <input type="checkbox" id="showPassword">
+        <span>Show password</span>
+      </label>
+    </div>
 
-    <button type="submit">Log In</button>
+    <button type="submit" class="primary-btn">Log In</button>
+
   </form>
 </div>
 
-<!-- Redirect for Sign Up -->
- <p>Want to create a account? <a href="sign-up.html">Sign Up here.</a></p>
+<!-- REDIRECT -->
+<p class="auth-redirect">
+  Don’t have an account?
+  <a href="sign-up.html">Sign up here</a>
+</p>
 
+<!-- Firebase config -->
+<script src="firebase.js"></script>
+<script src="script.js"></script>
 
-  <!-- Your Firebase config -->
-  <script src="firebase.js"></script>
-  <script src="script.js"></script>
+<script>
+  // Toggle password
+  document.getElementById("showPassword").addEventListener("change", e => {
+    document.getElementById("loginPassword").type =
+      e.target.checked ? "text" : "password";
+  });
 
-</body>
+  // Login handler
+  document.getElementById("loginForm").addEventListener("submit", e => {
+    e.preventDefault();
+
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value;
+
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(() => {
+        window.location.href = "index.html";
+      })
+      .catch(err => {
+        alert(err.message);
+      });
+  });
+</script>
 
 <!-- Footer -->
-<page-footer>
-  <a>Made by Adam Dimkovski</a><br>
-  <footer-text>Litness</footer-text>
-</page-footer>
+<footer class="page-footer">
+  <span class="footer-text">Litness</span>
+</footer>
 
+</body>
 </html>

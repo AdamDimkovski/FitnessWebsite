@@ -7,7 +7,7 @@
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="images/favicon.png">
-  
+
   <link rel="stylesheet" href="style-signup.css">
 
   <!-- Firebase App (compat version) -->
@@ -18,89 +18,183 @@
 
   <!-- Firebase Firestore (compat version) -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
 </head>
+
 <body>
 
 <!-- Navigation Bar -->
-<nav>
-    <nav-content>
-    <a href="index.html">Home</a>
-    </nav-content> 
-    <nav-content>
-    <a href="calculator.html">Maintenance Calculator</a>
-    </nav-content>
-    <nav-content>
-    <a href="food.html">Diet Tracker</a>
-    </nav-content>
-    <nav-content>
-    <a href="exercise.html">Workout Tracker</a>
-    </nav-content>
-    <nav-content id="signupLink">
-    <a href="sign-up.html">Sign Up</a>
-    </nav-content>
-    <nav-content id="loginLink">
-    <a href="log-in.html">Log In</a>
-    </nav-content>
-    <nav-content id="logoutLink" style="display:none;">
+<nav class="navbar">
+  <ul class="nav-list">
+
+    <li class="nav-item">
+      <a href="index.html">Home</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="calculator.html">Maintenance Calculator</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="food.html">Diet Tracker</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="exercise.html">Workout Tracker</a>
+    </li>
+
+    <!-- Auth‑controlled items -->
+    <li class="nav-item" id="signupLink">
+      <a href="sign-up.html">Sign Up</a>
+    </li>
+
+    <li class="nav-item" id="loginLink">
+      <a href="log-in.html">Log In</a>
+    </li>
+
+    <li class="nav-item" id="profileLink">
+      <a href="profile.html">Profile</a>
+    </li>
+
+    <li class="nav-item" id="logoutLink">
       <a href="#">Log Out</a>
-    </nav-content>
+    </li>
+
+  </ul>
 </nav>
 
-  <h1>Sign up</h1>
-  <p>Fill in the infomation below to make a account.</p>
+<!-- Main Content -->
+<main class="auth-container">
 
-<div class="signup-block">
-<form id="signupForm">
-  <input type="text" id="signupName" placeholder="Full Name" required>
-  <input type="number" id="signupAge" placeholder="Age" required>
+  <section class="auth-card">
+    <header class="auth-header">
+      <h1>Create your account</h1>
+      <p>Join Litness and start tracking your fitness journey.</p>
+    </header>
 
-  <!-- Fitness Goal Dropdown -->
-  <label for="signupGoal"></label>
-  <select id="signupGoal" required>
-    <option value="" disabled selected>Fitness Goal</option>
-    <option value="weight_loss">Weight Loss</option>
-    <option value="muscle_gain">Muscle Gain</option>
-    <option value="maintenance">Maintenance</option>
-    <option value="endurance">Endurance</option>
-    <option value="general_fitness">General Fitness</option>
-  </select>
+    <form id="signupForm" novalidate>
 
-  <input type="email" id="signupEmail" placeholder="Email" required>
-  <input type="password" id="signupPassword" placeholder="Password" required>
-  <label>Show Password<input type="checkbox" onclick="revealPassword()"></label>
-  <button type="submit">Sign Up</button>
-</form>
+      <div class="form-group">
+        <label for="signupName">Full name</label>
+        <input type="text" id="signupName" placeholder="e.g. Adam Dimkovski" required autofocus>
+      </div>
 
-<script>
-  function revealPassword() {
-    var x = document.getElementById("signupPassword");
-    if (x.type === "password") {
-      x.type = "text";
-    } else {
-      x.type = "password";
-    }
-  }
-</script>
+      <div class="form-group">
+        <label for="signupAge">Age</label>
+        <input type="number" id="signupAge" placeholder="Years" min="13" required>
+      </div>
 
-</div>
+      <div class="form-group">
+        <label for="signupGoal"></label>
+          <div class="form-group">
+            <label>Fitness Goal</label>
 
+            <div class="custom-select" id="goalSelect">
+              <div class="select-display">Select fitness goal</div>
+              <div class="dropdown-menu">
+                <div class="dropdown-item" data-value="weight_loss">Weight Loss</div>
+                <div class="dropdown-item" data-value="muscle_gain">Muscle Gain</div>
+                <div class="dropdown-item" data-value="maintenance">Maintenance</div>
+                <div class="dropdown-item" data-value="endurance">Endurance</div>
+                <div class="dropdown-item" data-value="general_fitness">General Fitness</div>
+              </div>
+            </div>
 
-<!-- Redirect for Login -->
- <p>Already have an account? <a href="log-in.html">Log In here.</a></p>
+            <!-- Hidden input so Firebase still receives the value -->
+            <input type="hidden" id="signupGoal" required>
+          </div>
+      </div>
 
-</body>
+      <div class="form-group">
+        <label for="signupEmail">Email</label>
+        <input type="email" id="signupEmail" placeholder="you@example.com" required>
+      </div>
 
-    <!-- Your Firebase config -->
-  <script src="firebase.js"></script>
-  <script src="script.js"></script>
+      <div class="form-group">
+        <label for="signupPassword">Password</label>
 
-  
+        <div class="password-row">
+          <input type="password" id="signupPassword" placeholder="Minimum 6 characters" required>
+          <button type="button" class="show-password">Show</button>
+        </div>
+      </div>
+
+      <p id="signupError" class="form-error"></p>
+
+      <button type="submit" class="primary-btn">Create account</button>
+    </form>
+
+    <p class="auth-switch">
+      Already have an account?
+      <a href="log-in.html">Log in</a>
+    </p>
+  </section>
+
+</main>
 
 <!-- Footer -->
-<page-footer>
-  <a>Made by Adam Dimkovski</a><br>
-  <footer-text>Litness</footer-text>
-</page-footer>
-  
+<footer class="page-footer">
+  <span class="footer-text">Litness</span>
+</footer>
+
+<!-- Firebase config -->
+<script src="firebase.js"></script>
+<script src="script.js"></script>
+
+<!-- Page JS -->
+<script>
+  // Show / hide password
+  document.querySelector(".show-password").addEventListener("click", () => {
+    const password = document.getElementById("signupPassword");
+    const btn = document.querySelector(".show-password");
+
+    const hidden = password.type === "password";
+    password.type = hidden ? "text" : "password";
+    btn.textContent = hidden ? "Hide" : "Show";
+  });
+
+  // Basic client-side validation
+  document.getElementById("signupForm").addEventListener("submit", (e) => {
+    const age = Number(document.getElementById("signupAge").value);
+    const errorBox = document.getElementById("signupError");
+
+    if (age < 13 || age > 100) {
+      e.preventDefault();
+      errorBox.textContent = "Please enter a valid age (13-100)";
+    } else {
+      errorBox.textContent = "";
+    }
+  });
+
+  // Custom dropdown logic
+  const customSelect = document.getElementById("goalSelect");
+  const display = customSelect.querySelector(".select-display");
+  const hiddenInput = document.getElementById("signupGoal");
+  const items = customSelect.querySelectorAll(".dropdown-item");
+
+  display.addEventListener("click", () => {
+    customSelect.classList.toggle("open");
+  });
+
+  items.forEach(item => {
+    item.addEventListener("click", () => {
+      display.textContent = item.textContent;
+      hiddenInput.value = item.dataset.value;
+
+      items.forEach(i => i.classList.remove("active"));
+      item.classList.add("active");
+
+      customSelect.classList.remove("open");
+    });
+  });
+
+  // Close on outside click
+  document.addEventListener("click", e => {
+    if (!customSelect.contains(e.target)) {
+      customSelect.classList.remove("open");
+    }
+  });
+
+</script>
+
+</body>
 </html>
