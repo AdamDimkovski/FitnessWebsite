@@ -3,193 +3,288 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Calorie Calculator</title>
+  <title>Litness</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="images/favicon.png">
-
+  
   <link rel="stylesheet" href="style-calculator.css">
 
   <!-- Firebase App (compat version) -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-</head>
 
+  <!-- Firebase Authentication (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <!-- Firebase Firestore (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+</head>
 <body>
 
 <!-- Navigation Bar -->
-<nav>
-  <nav-content><a href="index.html">Home</a></nav-content>
-  <nav-content><a href="calculator.html">Maintenance Calculator</a></nav-content>
-  <nav-content><a href="food.html">Diet Tracker</a></nav-content>
-  <nav-content><a href="exercise.html">Workout Tracker</a></nav-content>
-  <nav-content id="signupLink"><a href="sign-up.html">Sign Up</a></nav-content>
-  <nav-content id="loginLink"><a href="log-in.html">Log In</a></nav-content>
-  <nav-content id="profileLink" style="display:none;"><a href="profile.html">Profile</a></nav-content>
-  <nav-content id="logoutLink" style="display:none;"><a href="#">Log Out</a></nav-content>
+<nav class="navbar">
+  <ul class="nav-list">
+
+    <li class="nav-item">
+      <a href="index.html">Home</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="calculator.html">Maintenance Calculator</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="food.html">Diet Tracker</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="exercise.html">Workout Tracker</a>
+    </li>
+
+    <!-- Auth‑controlled items -->
+    <li class="nav-item" id="signupLink">
+      <a href="sign-up.html">Sign Up</a>
+    </li>
+
+    <li class="nav-item" id="loginLink">
+      <a href="log-in.html">Log In</a>
+    </li>
+
+    <li class="nav-item" id="profileLink">
+      <a href="profile.html">Profile</a>
+    </li>
+
+    <li class="nav-item" id="logoutLink">
+      <a href="#">Log Out</a>
+    </li>
+
+  </ul>
 </nav>
 
-<!-- Page Header -->
-<h1>Calorie Calculator</h1>
-<p>
-  You can use this maintenance calculator to discover your current maintenance
-  (the amount of calories you need to maintain your current weight).
-  This can also be useful for gaining or losing weight!
-</p>
+<main class="page">
 
-<!-- Calculator Card -->
-<div class="calculator-card">
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1>Calorie Calculator</h1>
+    <p class="page-subtitle">
+      Estimate your daily maintenance calories and adjust for weight loss or gain
+      based on your lifestyle.
+    </p>
+  </header>
 
-  <!-- SECTION: Personal Details -->
-  <h2 class="section-header">Please input your details:</h2>
+  <!-- Calculator -->
+  <section class="calculator-section">
+    <div class="calculator-card">
 
-  <div class="input-grid">
+      <!-- Personal Details -->
+      <fieldset class="form-section">
+        <legend class="section-header">Personal Details</legend>
 
-    <!-- Age -->
-    <div class="input-group">
-      <div class="label-with-tooltip">
-        <label for="ageInput">Age</label>
-        <span class="tooltip">❓
-          <span class="tooltiptext">Your age helps estimate your metabolic rate.</span>
-        </span>
+        <div class="input-grid">
+
+          <!-- Age -->
+          <div class="input-group">
+            <label for="ageInput" class="label-with-tooltip">
+              Age
+              <span class="tooltip" aria-label="Help">
+                ?
+                <span class="tooltiptext">
+                  Your age helps estimate your metabolic rate.
+                </span>
+              </span>
+            </label>
+
+            <input
+              type="number"
+              id="ageInput"
+              placeholder="Years"
+              min="0"
+            >
+          </div>
+
+          <!-- Gender -->
+          <div class="input-group">
+            <label class="label-with-tooltip">
+              Gender
+              <span class="tooltip" aria-label="Help">
+                ?
+                <span class="tooltiptext">
+                  Gender influences how your body burns calories.
+                </span>
+              </span>
+            </label>
+
+            <div class="gender-toggle" role="group" aria-label="Gender selection">
+              <button
+                type="button"
+                class="gender-btn active"
+                data-gender="Male"
+                aria-pressed="true"
+              >
+                Male
+              </button>
+
+              <button
+                type="button"
+                class="gender-btn"
+                data-gender="Female"
+                aria-pressed="false"
+              >
+                Female
+              </button>
+            </div>
+          </div>
+
+            <!-- Height -->
+            <div class="input-group">
+              <label class="label-with-tooltip" for="heightInput">
+                Height
+                <span class="tooltip">?
+                  <span class="tooltiptext">
+                    Enter your height using your selected unit.
+                  </span>
+                </span>
+              </label>
+
+              <input
+                type="number"
+                id="heightInput"
+                placeholder="Height"
+                min="0"
+              >
+            </div>
+
+            <!-- Weight -->
+            <div class="input-group">
+              <label class="label-with-tooltip" for="weightInput">
+                Weight
+                <span class="tooltip">?
+                  <span class="tooltiptext">
+                    Enter your current body weight.
+                  </span>
+                </span>
+              </label>
+
+              <input
+                type="number"
+                id="weightInput"
+                placeholder="Weight"
+                min="0"
+              >
+            </div>
+
+
+            <!-- Activity Level -->
+            <div class="input-group">
+              <label class="label-with-tooltip" for="myDropdown">
+                Activity Level
+                <span class="tooltip">?
+                  <span class="tooltiptext">
+                    Choose the option that best matches your weekly activity.
+                  </span>
+                </span>
+              </label>
+
+              <div class="custom-select">
+                <select id="myDropdown">
+                  <option value="">Select activity level</option>
+                  <option value="option1">Sedentary</option>
+                  <option value="option2">Lightly Active (1–3 days/week)</option>
+                  <option value="option3">Moderately Active (3–5 days/week)</option>
+                  <option value="option4">Very Active (6–7 days/week)</option>
+                  <option value="option5">Super Active</option>
+                </select>
+
+                <div class="dropdown-menu"></div>
+              </div>
+            </div>
+
+            <!-- Goal -->
+            <div class="input-group">
+              <label class="label-with-tooltip" for="goalSelect">
+                Goal
+                <span class="tooltip">?
+                  <span class="tooltiptext">
+                    Choose whether you want to maintain, lose, or gain weight.
+                  </span>
+                </span>
+              </label>
+
+              <div class="custom-select">
+                <select id="goalSelect">
+                  <option value="">Select goal</option>
+                  <option value="maintain">Maintain weight</option>
+                  <option value="lose">Lose weight</option>
+                  <option value="gain">Gain weight</option>
+                </select>
+
+                <div class="dropdown-menu"></div>
+              </div>
+            </div>
+
+            </div>
+          </fieldset>
+
+      <!-- Calculate -->
+      <div class="action-row">
+        <button class="calculate-button" onclick="calculateMain()">
+          Calculate Calories
+        </button>
       </div>
-      <input type="number" id="ageInput" placeholder="Enter your age">
-    </div>
 
-    <!-- Gender -->
-    <div class="input-group">
-      <div class="label-with-tooltip">
-        <label>Gender</label>
-        <span class="tooltip">❓
-          <span class="tooltiptext">Gender affects how your body burns calories.</span>
-        </span>
-      </div>
+      <!-- Extra Settings -->
+      <section class="extra-settings">
 
-      <div class="gender-toggle">
-        <button type="button" class="gender-btn active" data-gender="Male">Male</button>
-        <button type="button" class="gender-btn" data-gender="Female">Female</button>
-      </div>
-    </div>
-
-
-
-    <!-- Height -->
-    <div class="input-group">
-      <div class="label-with-tooltip">
-        <label for="heightInput">Height</label>
-        <span class="tooltip">❓
-          <span class="tooltiptext">Enter your height in your selected metric.</span>
-        </span>
-      </div>
-      <input type="number" id="heightInput" placeholder="Enter your height">
-    </div>
-
-    <!-- Weight -->
-    <div class="input-group">
-      <div class="label-with-tooltip">
-        <label for="weightInput">Weight</label>
-        <span class="tooltip">❓
-          <span class="tooltiptext">Enter your current weight in your selected metric.</span>
-        </span>
-      </div>
-      <input type="number" id="weightInput" placeholder="Enter your weight">
-    </div>
-
-    <!-- Activity Level -->
-    <div class="input-group">
-      <div class="label-with-tooltip">
-        <label for="myDropdown">Activity Level</label>
-        <span class="tooltip">❓
-          <span class="tooltiptext">Choose the option that best describes your weekly activity.</span>
-        </span>
-      </div>
-      <select id="myDropdown">
-        <option value="">Please select</option>
-        <option value="option1">Sedentary (little to no exercise)</option>
-        <option value="option2">Lightly Active (1–3 days/week)</option>
-        <option value="option3">Moderately Active (3–5 days/week)</option>
-        <option value="option4">Very Active (6–7 days/week)</option>
-        <option value="option5">Super Active (intense training or physical job)</option>
-      </select>
-    </div>
-
-    <!-- Goal -->
-    <div class="input-group">
-      <div class="label-with-tooltip">
-        <label for="goalSelect">Goal</label>
-        <span class="tooltip">❓
-          <span class="tooltiptext">Choose whether you want to maintain, lose, or gain weight.</span>
-        </span>
-      </div>
-      <select id="goalSelect">
-        <option value="">Please select</option>
-        <option value="maintain">Maintain weight</option>
-        <option value="lose">Lose weight</option>
-        <option value="gain">Gain weight</option>
-      </select>
-    </div>
-
-  </div> <!-- end input-grid -->
-
-  <!-- Calculate Button -->
-  <div class="input-group">
-    <button class="calculate-button" onclick="calculateMain()">Calculate</button>
-  </div>
-
-  <!-- Extra Settings -->
-  <div class="extra-settings">
-
-  <div class="settings-header">
-    <label>Extra Settings</label>
-    <span class="tooltip">❓
-      <span class="tooltiptext">Adjust your preferred units for height and weight.</span>
-    </span>
-  </div>
-
-  <button class="collapsible-btn">Toggle Extra Settings</button>
-
-  <div class="collapsible-content">
-    <fieldset class="settings-fieldset">
-      <legend>Unit Preferences</legend>
-
-      <!-- Weight Unit -->
-      <div class="settings-row">
-        <div class="label-with-tooltip">
-          <label>Weight Unit</label>
-          <span class="tooltip">❓
-            <span class="tooltiptext">Choose whether to enter weight in kg or lbs.</span>
+        <div class="settings-header">
+          <span class="settings-title">Extra Settings</span>
+          <span class="tooltip">?
+            <span class="tooltiptext">
+              Adjust your preferred height and weight units.
+            </span>
           </span>
         </div>
 
-        <div class="toggle-group" id="weight-toggle">
-          <button type="button" class="toggle-btn active" data-unit="kg">kg</button>
-          <button type="button" class="toggle-btn" data-unit="lbs">lbs</button>
+        <button type="button" class="collapsible-btn">
+          Unit Preferences
+        </button>
+
+        <div class="collapsible-content">
+          <fieldset class="settings-fieldset">
+            <legend>Measurement Units</legend>
+
+            <!-- Weight Unit -->
+            <div class="settings-row">
+              <label>Weight Unit</label>
+              <div class="toggle-group" id="weight-toggle">
+                <button type="button" class="toggle-btn active" data-unit="kg">kg</button>
+                <button type="button" class="toggle-btn" data-unit="lbs">lbs</button>
+              </div>
+            </div>
+
+            <!-- Height Unit -->
+            <div class="settings-row">
+              <label>Height Unit</label>
+              <div class="toggle-group" id="height-toggle">
+                <button type="button" class="toggle-btn active" data-unit="cm">cm</button>
+                <button type="button" class="toggle-btn" data-unit="inches">inches</button>
+              </div>
+            </div>
+
+          </fieldset>
         </div>
+
+      </section>
+
+      <!-- Results -->
+      <div id="resultBox" class="result-box">
+        <p id="resultOutput"></p>
       </div>
 
-      <!-- Height Unit -->
-      <div class="settings-row">
-        <div class="label-with-tooltip">
-          <label>Height Unit</label>
-          <span class="tooltip">❓
-            <span class="tooltiptext">Choose whether to enter height in cm or inches.</span>
-          </span>
-        </div>
+    </div>
+  </section>
 
-        <div class="toggle-group" id="height-toggle">
-          <button type="button" class="toggle-btn active" data-unit="cm">cm</button>
-          <button type="button" class="toggle-btn" data-unit="inches">inches</button>
-        </div>
-      </div>
-
-    </fieldset>
-  </div>
-</div> <!-- end extra-settings -->
-
-<div id="resultBox" class="result-box">
-  <p id="resultOutput"></p>
-</div>
+</main>
 
 
 <script>
@@ -300,17 +395,58 @@ function calculateMain() {
     <p>Fat: ${fatGrams} g/day</p>
   `;
 }
+
+
+document.querySelectorAll(".custom-select").forEach(selectWrapper => {
+  const select = selectWrapper.querySelector("select");
+  const menu = selectWrapper.querySelector(".dropdown-menu");
+
+  // Build menu items
+  menu.innerHTML = "";
+  [...select.options].forEach(opt => {
+    const item = document.createElement("div");
+    item.className = "dropdown-item";
+    item.textContent = opt.textContent;
+
+    item.addEventListener("click", () => {
+      select.value = opt.value;
+      selectWrapper.classList.remove("open");
+    });
+
+    menu.appendChild(item);
+  });
+
+  // Prevent native dropdown from opening
+  select.addEventListener("mousedown", e => {
+    e.preventDefault();
+    selectWrapper.classList.toggle("open");
+  });
+});
+
+// Close when clicking outside
+document.addEventListener("click", e => {
+  document.querySelectorAll(".custom-select").forEach(wrapper => {
+    if (!wrapper.contains(e.target)) wrapper.classList.remove("open");
+  });
+});
+
 </script>
 
-<!-- Firebase config -->
-<script src="firebase.js"></script>
-<script src="script.js"></script>
+<!-- Scripts -->
+  <script src="firebase.js"></script>
+  <script src="script.js"></script>
+
+<script>
+auth.onAuthStateChanged(user => {
+updateUIForAuthState(user);
+});
+</script>
+
 
 <!-- Footer -->
-<page-footer>
-  <a>Made by Adam Dimkovski</a><br>
-  <footer-text>Litness</footer-text>
-</page-footer>
+<footer class="page-footer">
+  <span class="footer-text">Litness</span>
+</footer>
 
 </body>
 
