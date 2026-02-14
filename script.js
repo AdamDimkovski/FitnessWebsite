@@ -144,7 +144,9 @@ firebase.auth().onAuthStateChanged((user) => {
     "/sign-up.html",
     "/verify.html",
     "/calculator.html",
-    "/calculator"
+    "/calculator",
+    "calculator.html"
+
   ];
 
   const isPublic = publicPages.some(p => path.endsWith(p));
