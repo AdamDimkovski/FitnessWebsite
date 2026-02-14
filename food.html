@@ -25,31 +25,43 @@
 <body>
 
 <!-- Navigation Bar -->
-<nav>
-    <nav-content>
-    <a href="index.html">Home</a>
-    </nav-content> 
-    <nav-content>
-    <a href="calculator.html">Maintenance Calculator</a>
-    </nav-content>
-    <nav-content>
-    <a href="food.html">Diet Tracker</a>
-    </nav-content>
-    <nav-content>
-    <a href="exercise.html">Workout Tracker</a>
-    </nav-content>
-    <nav-content id="signupLink">
-    <a href="sign-up.html">Sign Up</a>
-    </nav-content>
-    <nav-content id="loginLink">
-    <a href="log-in.html">Log In</a>
-    </nav-content>
-    <nav-content id="profileLink" style="display:none;">
-    <a href="profile.html">Profile</a>
-    </nav-content>
-    <nav-content id="logoutLink" style="display:none;">
-    <a href="#">Log Out</a>
-    </nav-content>
+<nav class="navbar">
+  <ul class="nav-list">
+
+    <li class="nav-item">
+      <a href="index.html">Home</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="calculator.html">Maintenance Calculator</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="food.html">Diet Tracker</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="exercise.html">Workout Tracker</a>
+    </li>
+
+    <!-- Auth‑controlled items -->
+    <li class="nav-item" id="signupLink">
+      <a href="sign-up.html">Sign Up</a>
+    </li>
+
+    <li class="nav-item" id="loginLink">
+      <a href="log-in.html">Log In</a>
+    </li>
+
+    <li class="nav-item" id="profileLink">
+      <a href="profile.html">Profile</a>
+    </li>
+
+    <li class="nav-item" id="logoutLink">
+      <a href="#">Log Out</a>
+    </li>
+
+  </ul>
 </nav>
 
   <h1><strong>Welcome back,</strong> <span id="profileName"></span></h1>
@@ -507,11 +519,9 @@ firebase.auth().onAuthStateChanged(async (user) => {
   quickAddList.classList.remove("hidden");
 
   const searchBar = document.getElementById("savedMealSearch");
+  const MEALS_LIMIT = 10; // Only show 10 meals by default
 
-  const snapshot = await savedMealsRef
-  .orderBy("verifiedPreset", "desc")
-  .orderBy("searchName")
-  .get();
+  const snapshot = await savedMealsRef.get();
 
   // Remove old rows but keep search bar
   quickAddList.querySelectorAll(".saved-meal-row").forEach(row => row.remove());
@@ -525,10 +535,18 @@ firebase.auth().onAuthStateChanged(async (user) => {
     allMeals.push({ meal, mealId });
   });
 
-  function renderMeals(meals) {
+  // Sort client-side by searchName or name
+  allMeals.sort((a, b) => {
+    const nameA = (a.meal.searchName || a.meal.name || "").toLowerCase();
+    const nameB = (b.meal.searchName || b.meal.name || "").toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
+
+  function renderMeals(meals, isSearching = false) {
     // Remove old rows/messages 
     quickAddList.querySelectorAll(".saved-meal-row").forEach(row => row.remove());
     quickAddList.querySelectorAll(".empty-text").forEach(msg => msg.remove());
+    quickAddList.querySelectorAll(".limit-msg").forEach(msg => msg.remove());
 
     if (meals.length === 0) {
       const noResults = document.createElement("p");
@@ -538,7 +556,10 @@ firebase.auth().onAuthStateChanged(async (user) => {
       return;
     }
 
-    meals.forEach(({ meal, mealId }) => {
+    // Limit meals to MEALS_LIMIT unless searching
+    const mealsToShow = isSearching ? meals : meals.slice(0, MEALS_LIMIT);
+
+    mealsToShow.forEach(({ meal, mealId }) => {
       const row = document.createElement("div");
       row.className = "saved-meal-row";
 
@@ -627,16 +648,29 @@ firebase.auth().onAuthStateChanged(async (user) => {
 
       quickAddList.appendChild(row);
     });
+
+    // Show message if limited
+    if (!isSearching && allMeals.length > MEALS_LIMIT) {
+      const limitMsg = document.createElement("p");
+      limitMsg.className = "limit-msg";
+      limitMsg.textContent = `Showing ${MEALS_LIMIT} of ${allMeals.length} meals. Search to see more.`;
+      limitMsg.style.color = "#aaa";
+      limitMsg.style.fontSize = "0.9rem";
+      limitMsg.style.marginTop = "10px";
+      limitMsg.style.fontStyle = "italic";
+      quickAddList.appendChild(limitMsg);
+    }
   }
 
-  renderMeals(allMeals);
+  renderMeals(allMeals, false);
 
   searchBar.addEventListener("input", () => {
     const query = searchBar.value.toLowerCase();
+    const isSearching = query.length > 0;
     const filtered = allMeals.filter(({ meal }) =>
       meal.name.toLowerCase().includes(query)
     );
-    renderMeals(filtered);
+    renderMeals(filtered, isSearching);
   });
 });
 
@@ -676,11 +710,14 @@ firebase.auth().onAuthStateChanged(async (user) => {
     if (existing.empty) {
       await savedMealsRef.add({
         name: nameInput.value.trim(),
+        searchName: nameInput.value.trim().toLowerCase(),
         calories: Number(calInput.value),
         protein: Number(proInput.value),
         carbs: Number(carbInput.value),
         fat: Number(fatInput.value),
-        createdBy: user.uid
+        createdBy: user.uid,
+        verifiedPreset: false,
+        timestamp: Date.now()
       });
     }
 
@@ -690,6 +727,27 @@ firebase.auth().onAuthStateChanged(async (user) => {
   // Add meal to today's log
   async function addMeal(meal) {
     await foodsRef.add(meal);
+    
+    // Save to global savedMeals if not already there
+    const existing = await savedMealsRef
+      .where("name", "==", meal.name)
+      .limit(1)
+      .get();
+
+    if (existing.empty) {
+      await savedMealsRef.add({
+        name: meal.name,
+        searchName: meal.name.toLowerCase(),
+        calories: meal.calories,
+        protein: meal.protein,
+        carbs: meal.carbs,
+        fat: meal.fat,
+        createdBy: user.uid,
+        verifiedPreset: false,
+        timestamp: Date.now()
+      });
+    }
+    
     await updateDailyTotals();
     loadFoods();
     loadRecentMeals();
@@ -783,11 +841,33 @@ async function loadRecentMeals() {
       <button class="quick-add-btn">Add Again</button>
     `;
 
-    item.querySelector(".quick-add-btn").addEventListener("click", () => {
-      addMeal({
+    item.querySelector(".quick-add-btn").addEventListener("click", async () => {
+      const newMeal = {
         ...meal,
         timestamp: Date.now()
-      });
+      };
+      
+      addMeal(newMeal);
+
+      // Also save to savedMeals if not already there
+      const existing = await savedMealsRef
+        .where("name", "==", meal.name)
+        .limit(1)
+        .get();
+
+      if (existing.empty) {
+        await savedMealsRef.add({
+          name: meal.name,
+          searchName: meal.name.toLowerCase(),
+          calories: meal.calories,
+          protein: meal.protein,
+          carbs: meal.carbs,
+          fat: meal.fat,
+          createdBy: user.uid,
+          verifiedPreset: false,
+          timestamp: Date.now()
+        });
+      }
     });
 
     container.appendChild(item);
@@ -850,6 +930,10 @@ firebase.auth().onAuthStateChanged(async (user) => {
 
   async function loadWater() {
     const snap = await logRef.get();
+    const userSnap = await db.collection("users").doc(user.uid).get();
+    const userData = userSnap.data() || {};
+    const targetWater = userData.targetWater || 3000;
+    
     const data = snap.data() || {};
     const water = data.water || 0;
 
@@ -857,7 +941,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
 
     const waterBar = document.getElementById("waterBar");
     if (waterBar) {
-      waterBar.style.width = `${(water / 3000) * 100}%`;
+      waterBar.style.width = `${Math.min((water / targetWater) * 100, 100)}%`;
     }
   }
 
@@ -1044,8 +1128,8 @@ firebase.auth().onAuthStateChanged(async (user) => {
 </body>
 
 <!-- Footer -->
-<page-footer>
-  <footer-text>Litness</footer-text>
-</page-footer>
+<footer class="page-footer">
+  <span class="footer-text">Litness</span>
+</footer>
 
 </html>
