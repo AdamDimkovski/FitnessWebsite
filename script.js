@@ -137,28 +137,28 @@ function setupLogout() {
 firebase.auth().onAuthStateChanged((user) => {
   const path = window.location.pathname;
 
-  const isCalculator = path.endsWith("calculator.html");
-  const isSignup = path.endsWith("sign-up.html");
-  const isLogin = path.endsWith("log-in.html");
-  const isVerify = path.endsWith("verify.html");
-  const isHome = path === "/" || path.endsWith("index.html");
+  const publicPages = [
+    "/",
+    "/index.html",
+    "/log-in.html",
+    "/sign-up.html",
+    "/verify.html",
+    "/calculator.html",
+    "/calculator"
+  ];
 
-  // Update navbar only
+  const isPublic = publicPages.some(p => path.endsWith(p));
+
   updateUIForAuthState(user);
   setupLogout();
 
-  // Public pages — NEVER block
-  if (isSignup || isLogin || isVerify || isHome || isCalculator) {
-    return;
-  }
+  if (isPublic) return;
 
-  // Protected pages
   if (!user) {
     window.location.replace("log-in.html");
     return;
   }
 
-  // Require verification
   if (!user.emailVerified) {
     window.location.replace("verify.html");
   }
