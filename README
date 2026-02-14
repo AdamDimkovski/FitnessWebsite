@@ -1,0 +1,28 @@
+# Fitness Tracker Web App
+
+A full-featured fitness tracking web application built with
+Firebase Authentication, Firestore, and Firebase Hosting.
+
+## Live Demo
+https://litnessfitness-72cb2.web.app/index.html
+
+## Features
+- User authentication (sign up, login, email verification)
+- Workout tracking with sets & PR detection
+- Exercise selector with categories
+- Progress charts (strength & body groups)
+- Persistent local + cloud data
+- Premium UI/UX with animations
+
+## Tech Stack
+- HTML, CSS, JavaScript
+- Firebase Auth
+- Firestore
+- Firebase Hosting
+- Chart.js
+
+## Setup (Local)
+```bash
+git clone https://github.com/Adam Dimkovski/FitnessWebsite.git
+cd FitnessWebsite
+firebase serve
