@@ -162,9 +162,9 @@
 
       /* DAILY TARGETS */
       setText("targetCalories", safe(data.targetCalories));
-      setText("targetProtein", safe(data.targetProtein, " g"));
-      setText("targetCarbs", safe(data.targetCarbs, " g"));
-      setText("targetFat", safe(data.targetFat, " g"));
+      setText("targetProtein", safe(data.targetProtein, ""));
+      setText("targetCarbs", safe(data.targetCarbs, ""));
+      setText("targetFat", safe(data.targetFat, ""));
 
       // Water (stored as mL → display as L)
       const waterLitres =
@@ -172,7 +172,7 @@
           ? (data.targetWater / 1000).toFixed(1)
           : data.targetWater;
 
-      setText("targetWater", safe(waterLitres, " L"));
+      setText("targetWater", safe(waterLitres, ""));
 
       /* ACCOUNT INFO */
       if (data.createdAt?.toDate) {
