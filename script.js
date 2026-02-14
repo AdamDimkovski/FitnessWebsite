@@ -137,11 +137,11 @@ function setupLogout() {
 firebase.auth().onAuthStateChanged((user) => {
   const path = window.location.pathname;
 
+  const isCalculator = path.endsWith("calculator.html");
   const isSignup = path.endsWith("sign-up.html");
   const isLogin = path.endsWith("log-in.html");
   const isVerify = path.endsWith("verify.html");
   const isHome = path === "/" || path.endsWith("index.html");
-  const isCalculator = path.endsWith("calculator.html");
 
   // Update navbar only
   updateUIForAuthState(user);
