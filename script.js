@@ -133,35 +133,41 @@ function setupLogout() {
   });
 }
 
+// --- PAGE CHECK HELPER ---
+function isPage(name) {
+  const path = window.location.pathname;
+  return (
+    path === `/${name}` ||
+    path === `/${name}.html` ||
+    path.startsWith(`/${name}/`)
+  );
+}
+
+
 // --- UNIFIED GLOBAL AUTH LISTENER ---
 firebase.auth().onAuthStateChanged((user) => {
-  const path = window.location.pathname;
-
-  const publicPages = [
-    "/",
-    "/index.html",
-    "/log-in.html",
-    "/sign-up.html",
-    "/verify.html",
-    "/calculator.html",
-    "/calculator",
-    "calculator.html"
-
-  ];
-
-  const isPublic = publicPages.some(p => path.endsWith(p));
-
   updateUIForAuthState(user);
   setupLogout();
 
+  const isPublic =
+    isPage("index") ||
+    isPage("log-in") ||
+    isPage("sign-up") ||
+    isPage("verify") ||
+    isPage("calculator");
+
+  // Public pages — NEVER block
   if (isPublic) return;
 
+  // Protected pages
   if (!user) {
-    window.location.replace("log-in.html");
+    window.location.replace("/log-in");
     return;
   }
 
+  // Require verification
   if (!user.emailVerified) {
-    window.location.replace("verify.html");
+    window.location.replace("/verify");
   }
 });
+
