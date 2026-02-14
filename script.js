@@ -141,13 +141,14 @@ firebase.auth().onAuthStateChanged((user) => {
   const isLogin = path.endsWith("log-in.html");
   const isVerify = path.endsWith("verify.html");
   const isHome = path === "/" || path.endsWith("index.html");
+  const isCalculator = path.endsWith("calculator.html");
 
   // Update navbar only
   updateUIForAuthState(user);
   setupLogout();
 
   // Public pages — NEVER block
-  if (isSignup || isLogin || isVerify || isHome) {
+  if (isSignup || isLogin || isVerify || isHome || isCalculator) {
     return;
   }
 
