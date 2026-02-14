@@ -1,37 +1,79 @@
-// --- SIGN UP ---
-const signupForm = document.getElementById('signupForm');
+// --- Sign Up ---
+const signupForm = document.getElementById("signupForm");
 
 if (signupForm) {
-  signupForm.addEventListener('submit', async (e) => {
+  signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const name = document.getElementById('signupName').value.trim();
-    const age = document.getElementById('signupAge').value.trim();
-    const goal = document.getElementById('signupGoal').value;
-    const email = document.getElementById('signupEmail').value.trim();
-    const password = document.getElementById('signupPassword').value;
+    const name = document.getElementById("signupName")?.value.trim() || "N/A";
+    const ageRaw = document.getElementById("signupAge")?.value.trim();
+    const goal = document.getElementById("signupGoal")?.value || "general_fitness";
+    const email = document.getElementById("signupEmail")?.value.trim();
+    const password = document.getElementById("signupPassword")?.value;
+
+    const age = ageRaw ? Number(ageRaw) : null;
 
     try {
       const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-      const user = userCredential.user;
 
-      await user.sendEmailVerification();
-      alert("Verification email sent! Please check your inbox.");
+      // Wait for Firebase to update the auth state
+      await new Promise(res => setTimeout(res, 500));
 
-      await db.collection("users").doc(user.uid).set({
-        name,
-        age,
-        goal,
-        email,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      const user = firebase.auth().currentUser;
 
-      alert("Signup successful! Please verify your email before logging in.");
+      // Update user profile with display name
+      try {
+        await user.updateProfile({
+          displayName: name
+        });
+      } catch (profileErr) {
+        console.error("Profile update failed:", profileErr);
+      }
+
+      // Send verification email
+      try {
+        await user.sendEmailVerification();
+      } catch (emailErr) {
+        console.error("Email verification failed:", emailErr);
+      }
+
+      // Enable Firestore network
+      try {
+        await db.enableNetwork();
+      } catch (e) {
+        console.warn("Firestore already online");
+      }
+
+      // Firestore write
+      try {
+        console.log("About to write Firestore doc for:", user.uid);
+        await db.collection("users").doc(user.uid).set({
+          name,
+          age,
+          goal,
+          email: user.email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          height: null,
+          weight: null,
+          targetWeight: null,
+          gender: null,
+          activityLevel: null,
+          targetWater: null,
+          targetProtein: null,
+          targetCarbs: null,
+          targetFat: null,
+          targetCalories: null
+        });
+
+      } catch (writeErr) {
+        console.error("Firestore write failed:", writeErr);
+      }
+
       window.location.href = "verify.html";
 
-    } catch (error) {
-      console.error(error.code, error.message);
-      alert("Error: " + error.message);
+    } catch (err) {
+      console.error("GLOBAL SIGNUP ERROR:", err);
+      alert("Signup error: " + err.message);
     }
   });
 }
@@ -95,24 +137,27 @@ function setupLogout() {
 firebase.auth().onAuthStateChanged((user) => {
   const path = window.location.pathname;
 
-  // Update UI immediately (instant visual response)
+  const isSignup = path.endsWith("sign-up.html");
+  const isLogin = path.endsWith("log-in.html");
+  const isVerify = path.endsWith("verify.html");
+  const isHome = path === "/" || path.endsWith("index.html");
+
+  // Update navbar only
   updateUIForAuthState(user);
   setupLogout();
 
-  // Logged out → block protected content
-  if (!user) {
-    const blocker = document.getElementById("accessBlocker");
-    if (blocker) blocker.classList.remove("hidden");
+  // Public pages — NEVER block
+  if (isSignup || isLogin || isVerify || isHome) {
     return;
   }
 
-  // Pages that never redirect
-  const isHome = path === "/" || path.endsWith("index.html");
-  const isVerify = path.endsWith("verify.html");
+  // Protected pages
+  if (!user) {
+    window.location.replace("log-in.html");
+    return;
+  }
 
-  if (isHome || isVerify) return;
-
-  // Redirect unverified users
+  // Require verification
   if (!user.emailVerified) {
     window.location.replace("verify.html");
   }

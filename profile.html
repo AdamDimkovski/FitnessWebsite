@@ -3,34 +3,55 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>My Profile</title>
+  <title>Profile</title>
 
+  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="images/favicon.png">
+  
   <link rel="stylesheet" href="style-profile.css">
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-  <!-- Firebase config + global script -->
-  <script src="firebase.js"></script>
-  <script src="script.js"></script>
 </head>
-
 <body>
 
-  <!-- Navigation Bar -->
-  <nav>
-    <nav-content><a href="index.html">Home</a></nav-content>
-    <nav-content><a href="calculator.html">Maintenance Calculator</a></nav-content>
-    <nav-content><a href="food.html">Diet Tracker</a></nav-content>
-    <nav-content><a href="exercise.html">Workout Tracker</a></nav-content>
-    <nav-content id="signupLink"><a href="sign-up.html">Sign Up</a></nav-content>
-    <nav-content id="loginLink"><a href="log-in.html">Log In</a></nav-content>
-    <nav-content id="profileLink" style="display:none;"><a href="profile.html">Profile</a></nav-content>
-    <nav-content id="logoutLink" style="display:none;"><a href="#">Log Out</a></nav-content>
-  </nav>
+<!-- Navigation Bar -->
+<nav class="navbar">
+  <ul class="nav-list">
+
+    <li class="nav-item">
+      <a href="index.html">Home</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="calculator.html">Maintenance Calculator</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="food.html">Diet Tracker</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="exercise.html">Workout Tracker</a>
+    </li>
+
+    <!-- Auth‑controlled items -->
+    <li class="nav-item" id="signupLink">
+      <a href="sign-up.html">Sign Up</a>
+    </li>
+
+    <li class="nav-item" id="loginLink">
+      <a href="log-in.html">Log In</a>
+    </li>
+
+    <li class="nav-item" id="profileLink">
+      <a href="profile.html">Profile</a>
+    </li>
+
+    <li class="nav-item" id="logoutLink">
+      <a href="#">Log Out</a>
+    </li>
+
+  </ul>
+</nav>
 
   <h1>My Profile</h1>
   <p>Below are your account details</p>
@@ -74,68 +95,146 @@
     <p><strong>Member Since:</strong> <span id="profileCreated"></span></p>
   </div>
 
-  <!-- Profile JS -->
-  <script>
-    firebase.auth().onAuthStateChanged(async (user) => {
-      if (!user) {
-        window.location.href = "log-in.html";
-        return;
-      }
+    <!-- Firebase App (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 
+  <!-- Firebase Authentication (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <!-- Firebase Firestore (compat version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Scripts -->
+  <script src="firebase.js"></script>
+  <script src="script.js"></script>
+
+
+  <!-- Profile JS -->
+<script>
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (!user) {
+      window.location.href = "log-in.html";
+      return;
+    }
+
+    try {
       const db = firebase.firestore();
       const docRef = db.collection("users").doc(user.uid);
       const docSnap = await docRef.get();
 
       if (!docSnap.exists) {
-        console.log("No profile data found.");
+        console.warn("No profile data found.");
+        fillAllWithNA();
         return;
       }
 
       const data = docSnap.data();
 
-      // PERSONAL INFO
-      document.getElementById("profileName").innerText = data.name ?? "—";
-      document.getElementById("profileAge").innerText = data.age ?? "—";
-      document.getElementById("profileGoal").innerText = formatGoal(data.goal);
-      document.getElementById("profileEmail").innerText = data.email ?? user.email;
+      /* PERSONAL INFO */
+      setText("profileName", safe(data.name));
+      setText("profileAge", safe(data.age));
+      setText("profileGoal", formatText(data.goal));
+      setText("profileEmail", safe(data.email, user.email));
 
-      // PHYSICAL STATS
-      document.getElementById("profileHeight").innerText = data.height ?? "—";
-      document.getElementById("profileWeight").innerText = data.weight ?? "—";
-      document.getElementById("profileTargetWeight").innerText = data.targetWeight ?? "—";
-      document.getElementById("profileGender").innerText = data.gender ?? "—";
-      document.getElementById("profileActivity").innerText = formatGoal(data.activityLevel);
-
-      // DAILY TARGETS
-      document.getElementById("targetCalories").innerText = data.targetCalories ?? "—";
-      document.getElementById("targetProtein").innerText = data.targetProtein ?? "—";
-      document.getElementById("targetCarbs").innerText = data.targetCarbs ?? "—";
-      document.getElementById("targetFat").innerText = data.targetFat ?? "—";
-
-      // Convert water from mL to L if needed
-      const water = typeof data.targetWater === "number" ? (data.targetWater / 1000).toFixed(1) : data.targetWater ?? "—";
-      document.getElementById("targetWater").innerText = water;
-
-      // ACCOUNT CREATION DATE
-      if (data.createdAt) {
-        const date = data.createdAt.toDate().toLocaleDateString();
-        document.getElementById("profileCreated").innerText = date;
-      } else {
-        document.getElementById("profileCreated").innerText = "—";
+      /* PHYSICAL STATS */
+      setText("profileHeight", safe(data.height, " cm"));
+      setText("profileWeight", safe(data.weight, " kg"));
+      setText("profileTargetWeight", safe(data.targetWeight, " kg"));
+      setText("profileGender", safe(data.gender));
+      if(data.activityLevel === 1.2) {
+        setText("profileActivity", "Sedentary");
       }
-    });
+      else if(data.activityLevel === 1.375) {
+        setText("profileActivity", "Lightly Active");
+      }
+      else if(data.activityLevel === 1.55) {
+        setText("profileActivity", "Moderately Active");
+      }
+      else if(data.activityLevel === 1.725) {
+        setText("profileActivity", "Very Active");
+      }
+      else if(data.activityLevel === 1.9) {
+        setText("profileActivity", "Super Active");
+      }
+      else {
+        setText("profileActivity", "N/A");
+      }
 
-    function formatGoal(value) {
-      if (typeof value !== "string") return "Not set";
-      return value.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      /* DAILY TARGETS */
+      setText("targetCalories", safe(data.targetCalories));
+      setText("targetProtein", safe(data.targetProtein, " g"));
+      setText("targetCarbs", safe(data.targetCarbs, " g"));
+      setText("targetFat", safe(data.targetFat, " g"));
+
+      // Water (stored as mL → display as L)
+      const waterLitres =
+        typeof data.targetWater === "number"
+          ? (data.targetWater / 1000).toFixed(1)
+          : data.targetWater;
+
+      setText("targetWater", safe(waterLitres, " L"));
+
+      /* ACCOUNT INFO */
+      if (data.createdAt?.toDate) {
+        setText(
+          "profileCreated",
+          data.createdAt.toDate().toLocaleDateString()
+        );
+      } else {
+        setText("profileCreated", "N/A");
+      }
+
+    } catch (err) {
+      console.error("Profile load error:", err);
+      fillAllWithNA();
     }
-  </script>
+  });
 
-  <!-- Footer -->
-  <page-footer>
-    <a>Made by Adam Dimkovski</a><br>
-    <footer-text>Litness</footer-text>
-  </page-footer>
+  /* HELPERS */
+
+  function safe(value, fallbackOrSuffix = "") {
+    if (value === undefined || value === null || value === "") {
+      return fallbackOrSuffix && fallbackOrSuffix.includes("@")
+        ? fallbackOrSuffix
+        : "N/A";
+    }
+
+    if (typeof fallbackOrSuffix === "string" && fallbackOrSuffix.startsWith(" ")) {
+      return `${value}${fallbackOrSuffix}`;
+    }
+
+    return value;
+  }
+
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value ?? "N/A";
+  }
+
+  function formatText(value) {
+    if (typeof value !== "string") return "N/A";
+    return value
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  function fillAllWithNA() {
+    document.querySelectorAll("span[id]").forEach(span => {
+      span.textContent = "N/A";
+    });
+  }
+</script>
+
+<script>
+auth.onAuthStateChanged(user => {
+updateUIForAuthState(user);
+});
+</script>
+
+<!-- Footer -->
+<footer class="page-footer">
+  <span class="footer-text">Litness</span>
+</footer>
 
 </body>
 </html>
