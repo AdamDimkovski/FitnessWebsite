@@ -24,272 +24,386 @@
 
 <body>
 
-  <!-- Navigation Bar -->
-  <nav>
-    <nav-content><a href="index.html">Home</a></nav-content>
-    <nav-content><a href="calculator.html">Maintenance Calculator</a></nav-content>
-    <nav-content><a href="food.html">Diet Tracker</a></nav-content>
-    <nav-content><a href="exercise.html">Workout Tracker</a></nav-content>
-    <nav-content id="signupLink"><a href="sign-up.html">Sign Up</a></nav-content>
-    <nav-content id="loginLink"><a href="log-in.html">Log In</a></nav-content>
-    <nav-content id="profileLink" style="display:none;"><a href="profile.html">Profile</a></nav-content>
-    <nav-content id="logoutLink" style="display:none;"><a href="#">Log Out</a></nav-content>
-  </nav>
+<!-- Navigation Bar -->
+<nav class="navbar">
+  <ul class="nav-list">
 
-  <!-- Pr Toast Div -->
-  <div id="prToast" class="pr-toast"></div>
+    <li class="nav-item">
+      <a href="index.html">Home</a>
+    </li>
 
-  <!-- PR Sound -->
-  <audio id="prSound" src="sounds/PRping.mp3"></audio>
+    <li class="nav-item">
+      <a href="calculator.html">Maintenance Calculator</a>
+    </li>
 
-  <!-- Access Blocker Modal -->
-  <div id="accessBlocker" style="display:none;" class="modal">
-    <div class="modal-content">
-      <h2>Must have Account to use this page.</h2>
-      <p>Click the buttons below to log in or sign up!</p>
-      <a href="sign-up.html"><button>Sign Up</button></a>
-      <a href="log-in.html"><button>Log In</button></a>
+    <li class="nav-item">
+      <a href="food.html">Diet Tracker</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="exercise.html">Workout Tracker</a>
+    </li>
+
+    <!-- Auth‑controlled items -->
+    <li class="nav-item" id="signupLink">
+      <a href="sign-up.html">Sign Up</a>
+    </li>
+
+    <li class="nav-item" id="loginLink">
+      <a href="log-in.html">Log In</a>
+    </li>
+
+    <li class="nav-item" id="profileLink">
+      <a href="profile.html">Profile</a>
+    </li>
+
+    <li class="nav-item" id="logoutLink">
+      <a href="#">Log Out</a>
+    </li>
+
+  </ul>
+</nav>
+
+  <!-- PR Toast -->
+<div id="prToast" class="pr-toast" role="status" aria-live="polite"></div>
+
+<!-- PR Sound -->
+<audio id="prSound" src="sounds/PRping.mp3" preload="auto"></audio>
+
+<!-- Page Intro -->
+<section class="page-intro">
+  <h1>
+    <strong>Welcome back,</strong>
+    <span id="profileName"></span>
+  </h1>
+  <p>
+    Track your workouts, monitor your strength, and watch your progress grow!
+  </p>
+</section>
+
+<!-- CREATE WORKOUT -->
+<section class="workout-top-panel" aria-labelledby="create-workout-heading">
+  <h2 id="create-workout-heading">Create Workout</h2>
+
+  <form id="workoutForm" novalidate>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="workoutName">Workout Name</label>
+        <input
+          type="text"
+          id="workoutName"
+          placeholder="e.g. Push Day, Leg Day, Chest Strength"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="workoutDate">Workout Date</label>
+        <input type="date" id="workoutDate">
+      </div>
     </div>
-  </div>
 
-  <h1><strong>Welcome back,</strong> <span id="profileName"></span></h1>
-  <p>Track your workouts, monitor your strength, and watch your progress grow!</p>
-
-    <!-- Workout Top Panel -->
-    <section class="workout-top-panel">
-      <h2>Create Workout</h2>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="workoutName">Workout Name</label>
-          <input
-            type="text"
-            id="workoutName"
-            placeholder="e.g., Push Day, Leg Day, Chest Strength"
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="workoutDate">Workout Date</label>
-          <input type="date" id="workoutDate">
-        </div>
-      </div>
-
-      <div class="selected-exercises-panel">
-        <h3>Selected Exercises</h3>
-        <div id="selectedExercisesList"></div>
-      </div>
-
-      <div class="workout-buttons">
-        <button id="openExerciseSelector" class="btn-primary">+ Add Exercises</button>
-        <button id="saveWorkoutBtn" class="btn-save">Save Workout</button>
-      </div>
+    <!-- Selected Exercises -->
+    <section class="selected-exercises-panel">
+      <h3>Selected Exercises</h3>
+      <div id="selectedExercisesList" aria-live="polite"></div>
     </section>
 
-  <!-- Notes Modal -->
-  <div id="notesModal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h3>Add Notes for <span id="modalExerciseName"></span></h3>
-      <textarea id="exerciseNoteInput" placeholder="Enter notes..."></textarea>
+    <!-- Action Buttons -->
+    <div class="workout-buttons">
+      <button
+        type="button"
+        id="openExerciseSelector"
+        class="btn-primary"
+      >
+        + Add Exercises
+      </button>
+
+      <button
+        type="button"
+        id="saveWorkoutBtn"
+        class="btn-save"
+      >
+        Save Workout
+      </button>
+    </div>
+
+  </form>
+</section>
+
+<!-- NOTES MODAL -->
+<div
+  id="notesModal"
+  class="modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="notesModalTitle"
+  hidden
+>
+  <div class="modal-content">
+    <h3 id="notesModalTitle">
+      Add Notes for <span id="modalExerciseName"></span>
+    </h3>
+
+    <textarea
+      id="exerciseNoteInput"
+      placeholder="Enter notes..."
+      rows="4"
+    ></textarea>
+
+    <div class="modal-actions">
       <button id="saveNoteBtn" class="btn-primary">Save</button>
       <button id="cancelNoteBtn" class="btn-secondary">Cancel</button>
     </div>
   </div>
+</div>
 
-  <!-- Personal Records Panel -->
-<section class="pr-panel">
-  <h2>Personal Records</h2>
+<!-- PERSONAL RECORDS -->
+<section class="pr-panel" aria-labelledby="pr-heading">
+  <h2 id="pr-heading">Personal Records</h2>
 
-  <input 
-    type="text" 
-    id="prSearch" 
-    class="pr-search" 
+  <input
+    type="search"
+    id="prSearch"
+    class="pr-search"
     placeholder="Search exercises..."
+    aria-label="Search personal records"
   >
 
   <div id="prCategories"></div>
 </section>
 
-  <!-- Workout History -->
-<section class="workout-history-container">
-  <h2>Your Workout History</h2>
+<!-- WORKOUT HISTORY -->
+<section class="workout-history-container" aria-labelledby="history-heading">
+  <h2 id="history-heading">Your Workout History</h2>
   <div id="historyYears"></div>
 </section>
 
-  <!-- Strength Progress Chart -->
-<section class="progress-chart-container">
-  <h2>Progress Analytics</h2>
+<!-- ANALYTICS -->
+<section class="progress-chart-container" aria-labelledby="analytics-heading">
+  <h2 id="analytics-heading">Progress Analytics</h2>
+
+  <label for="chartSelector" class="visually-hidden">
+    Select analytics type
+  </label>
 
   <select id="chartSelector" class="chart-selector">
     <option value="strength">Strength Progression</option>
     <option value="bodygroups">Most Used Body Groups</option>
   </select>
 
-  <canvas id="progressChart"></canvas>
+  <div class="chart-wrapper">
+    <canvas id="progressChart"></canvas>
+  </div>
 </section>
 
   <!-- Page Logic -->
-  <script>
+<script>
 
-// User Name
+/* Shared Helpers */
+
+const $ = id => document.getElementById(id);
+
+function getCurrentUser() {
+  return auth.currentUser || null;
+}
+
+/* User Profile */
+
 async function loadUserName() {
-  const user = auth.currentUser;
+  const user = getCurrentUser();
   if (!user) return;
 
-  const doc = await db.collection("users").doc(user.uid).get();
-  if (doc.exists) {
-    document.getElementById("profileName").textContent = doc.data().name;
+  try {
+    const snap = await db.collection("users").doc(user.uid).get();
+    if (!snap.exists) return;
+
+    $("profileName").textContent = snap.data().name || "";
+  } catch (err) {
+    console.error("Failed to load user name:", err);
   }
 }
 
-// Load workout history with PR highlighting
-    async function loadWorkoutHistory() {
-    const user = auth.currentUser;
-    if (!user) return;
+/* Workout History */
 
-    const snapshot = await db.collection("users")
+async function loadWorkoutHistory() {
+  const user = getCurrentUser();
+  if (!user) return;
+
+  const container = $("historyYears");
+  container.innerHTML = "";
+
+  try {
+    const snapshot = await db
+      .collection("users")
       .doc(user.uid)
       .collection("workouts")
       .orderBy("date", "desc")
       .get();
-
-    const container = document.getElementById("historyYears");
-    container.innerHTML = "";
 
     if (snapshot.empty) {
       container.innerHTML = `<p style="color:#aaa;">No workouts logged yet.</p>`;
       return;
     }
 
-    // Group by year → month
-    const groups = {};
+    const grouped = groupWorkouts(snapshot.docs);
+    renderWorkoutHistory(container, grouped);
+    attachHistoryCollapsibles();
 
-    snapshot.docs.forEach(doc => {
-      const data = doc.data();
-      const date = new Date(data.date);
-
-      const year = date.getFullYear();
-      const month = date.toLocaleString("default", { month: "long" });
-
-      if (!groups[year]) groups[year] = {};
-      if (!groups[year][month]) groups[year][month] = [];
-
-      groups[year][month].push(data);
-    });
-
-    // Render years
-    Object.keys(groups).forEach(year => {
-      const yearDiv = document.createElement("div");
-      yearDiv.className = "history-year";
-
-      yearDiv.innerHTML = `
-        <div class="history-year-header">
-          <span>${year}</span>
-          <span class="history-arrow">▶</span>
-        </div>
-        <div class="history-year-content"></div>
-      `;
-
-      const yearContent = yearDiv.querySelector(".history-year-content");
-
-      // Render months inside year
-      Object.keys(groups[year]).forEach(month => {
-        const monthDiv = document.createElement("div");
-        monthDiv.className = "history-month";
-
-        monthDiv.innerHTML = `
-          <div class="history-month-header">
-            <span>${month}</span>
-            <span class="history-arrow">▶</span>
-          </div>
-          <div class="history-month-content"></div>
-        `;
-
-        const monthContent = monthDiv.querySelector(".history-month-content");
-
-        // Render workouts inside month
-        groups[year][month].forEach(workout => {
-          const workoutDiv = document.createElement("div");
-          workoutDiv.className = "history-workout";
-
-          workoutDiv.innerHTML = `
-            <div class="history-workout-header">
-              <span>${workout.workoutName} — ${workout.date}</span>
-              <span class="history-arrow">▶</span>
-            </div>
-
-            <div class="history-workout-content">
-              ${workout.exercises.map(ex => `
-                <div class="history-exercise">
-                  <strong>${ex.name}</strong>
-                  <ul>
-                    ${ex.sets.map(s => `
-                    <li class="history-set">
-                    ${
-                      ex.type === "time-weight"
-                        ? `${s.time} sec × ${s.weight} kg`
-                        : `${s.reps} reps × ${s.weight} kg`
-                    }
-                    </li>
-
-                    `).join("")}
-                  </ul>
-                  ${ex.note ? `<p><em>${ex.note}</em></p>` : ""}
-                </div>
-              `).join("")}
-            </div>
-          `;
-
-          monthContent.appendChild(workoutDiv);
-        });
-
-        yearContent.appendChild(monthDiv);
-      });
-
-      container.appendChild(yearDiv);
-    });
-
-    // Collapsible logic (year, month, workout)
-    document.querySelectorAll(".history-year-header, .history-month-header, .history-workout-header")
-      .forEach(header => {
-        header.addEventListener("click", () => {
-          const content = header.nextElementSibling;
-          const arrow = header.querySelector(".history-arrow");
-
-          const open = content.style.display === "block";
-          content.style.display = open ? "none" : "block";
-          arrow.classList.toggle("open", !open);
-        });
-      });
+  } catch (err) {
+    console.error("Failed to load workout history:", err);
+    container.innerHTML = `<p style="color:#f66;">Failed to load workouts.</p>`;
   }
+}
 
-// Load strength progress chart
+/* Grouping Logic */
+
+function groupWorkouts(docs) {
+  const groups = {};
+
+  docs.forEach(doc => {
+    const data = doc.data();
+    const dateObj = new Date(data.date);
+
+    const year = dateObj.getFullYear();
+    const month = dateObj.toLocaleString("default", { month: "long" });
+
+    if (!groups[year]) groups[year] = {};
+    if (!groups[year][month]) groups[year][month] = [];
+
+    groups[year][month].push(data);
+  });
+
+  return groups;
+}
+
+/* Rendering */
+
+function renderWorkoutHistory(container, groups) {
+  Object.keys(groups).forEach(year => {
+    const yearDiv = document.createElement("div");
+    yearDiv.className = "history-year";
+
+    yearDiv.innerHTML = `
+      <div class="history-year-header">
+        <span>${year}</span>
+        <span class="history-arrow">▶</span>
+      </div>
+      <div class="history-year-content"></div>
+    `;
+
+    const yearContent = yearDiv.querySelector(".history-year-content");
+
+    Object.keys(groups[year]).forEach(month => {
+      yearContent.appendChild(createMonthSection(month, groups[year][month]));
+    });
+
+    container.appendChild(yearDiv);
+  });
+}
+
+function createMonthSection(month, workouts) {
+  const monthDiv = document.createElement("div");
+  monthDiv.className = "history-month";
+
+  monthDiv.innerHTML = `
+    <div class="history-month-header">
+      <span>${month}</span>
+      <span class="history-arrow">▶</span>
+    </div>
+    <div class="history-month-content"></div>
+  `;
+
+  const content = monthDiv.querySelector(".history-month-content");
+
+  workouts.forEach(workout => {
+    content.appendChild(createWorkoutSection(workout));
+  });
+
+  return monthDiv;
+}
+
+function createWorkoutSection(workout) {
+  const div = document.createElement("div");
+  div.className = "history-workout";
+
+  div.innerHTML = `
+    <div class="history-workout-header">
+      <span>${workout.workoutName} — ${workout.date}</span>
+      <span class="history-arrow">▶</span>
+    </div>
+
+    <div class="history-workout-content">
+      ${workout.exercises.map(renderExercise).join("")}
+    </div>
+  `;
+
+  return div;
+}
+
+function renderExercise(ex) {
+  return `
+    <div class="history-exercise">
+      <strong>${ex.name}</strong>
+      <ul>
+        ${ex.sets.map(s => `
+          <li class="history-set">
+            ${
+              ex.type === "time-weight"
+                ? `${s.time} sec × ${s.weight} kg`
+                : `${s.reps} reps × ${s.weight} kg`
+            }
+          </li>
+        `).join("")}
+      </ul>
+      ${ex.note ? `<p><em>${ex.note}</em></p>` : ""}
+    </div>
+  `;
+}
+
+/* Collapsible Behaviour */
+
+function attachHistoryCollapsibles() {
+  document.querySelectorAll(
+    ".history-year-header, .history-month-header, .history-workout-header"
+  ).forEach(header => {
+    header.addEventListener("click", () => {
+      const content = header.nextElementSibling;
+      const arrow = header.querySelector(".history-arrow");
+
+      const isOpen = content.style.display === "block";
+      content.style.display = isOpen ? "none" : "block";
+      arrow.classList.toggle("open", !isOpen);
+    });
+  });
+}
+
+/* Strength Progress */
+
 let chartInstance = null;
 
 async function loadStrengthProgress() {
-  const user = auth.currentUser;
-  if (!user) return;
+  const user = getCurrentUser();
+  if (!user) return [];
 
-  const snapshot = await db.collection("users")
+  const snapshot = await db
+    .collection("users")
     .doc(user.uid)
     .collection("workouts")
     .orderBy("date", "asc")
     .get();
 
-  const dataPoints = [];
+  const points = [];
 
   snapshot.forEach(doc => {
     const workout = doc.data();
 
     workout.exercises.forEach(ex => {
-
-      // Skip timed exercises — they do NOT belong in the strength chart
       if (ex.type === "time-weight") return;
 
-      // Strength PR = max weight
       const maxWeight = Math.max(...ex.sets.map(s => s.weight || 0));
 
-      dataPoints.push({
+      points.push({
         date: workout.date,
         exercise: ex.name,
         weight: maxWeight
@@ -297,14 +411,17 @@ async function loadStrengthProgress() {
     });
   });
 
-  return dataPoints;
+  return points;
 }
 
-async function loadBodyGroupUsage() {
-  const user = auth.currentUser;
-  if (!user) return;
+/* Body Group Usage */
 
-  const snapshot = await db.collection("users")
+async function loadBodyGroupUsage() {
+  const user = getCurrentUser();
+  if (!user) return {};
+
+  const snapshot = await db
+    .collection("users")
     .doc(user.uid)
     .collection("workouts")
     .get();
@@ -324,357 +441,428 @@ async function loadBodyGroupUsage() {
     Core: ["Plank", "Cable Crunch", "Hanging Leg Raise"]
   };
 
+  function matchesCategory(exName, catArray) {
+    const name = (exName || "").toLowerCase();
+    return catArray.some(catEntry => {
+      const entry = catEntry.toLowerCase();
+      if (name === entry || name.includes(entry) || entry.includes(name)) return true;
+
+      const entryTokens = entry.split(/\s+/).filter(t => t.length >= 4);
+      const matches = entryTokens.filter(tok => name.includes(tok)).length;
+      if (matches >= 2) return true;
+
+      return false;
+    });
+  }
+
   snapshot.forEach(doc => {
     const workout = doc.data();
 
     workout.exercises.forEach(ex => {
-      let found = false;
+      let matched = false;
 
       for (const group in EXERCISE_CATEGORIES) {
-        if (EXERCISE_CATEGORIES[group].includes(ex.name)) {
+        if (matchesCategory(ex.name, EXERCISE_CATEGORIES[group])) {
           groups[group]++;
-          found = true;
+          matched = true;
           break;
         }
       }
 
-      if (!found) groups.Other++;
+      if (!matched) groups.Other++;
     });
   });
 
   return groups;
 }
 
+/* Chart Rendering */
+
 async function renderChart(type) {
-  const ctx = document.getElementById("progressChart").getContext("2d");
+  const canvas = document.getElementById("progressChart");
+  if (!canvas) return;
 
-  if (chartInstance) chartInstance.destroy();
+  const ctx = canvas.getContext("2d");
 
-  /* -----------------------------
-     STRENGTH PROGRESSION (LINE)
-  ------------------------------ */
-  if (type === "strength") {
-    const data = await loadStrengthProgress();
-
-    chartInstance = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: data.map(d => d.date),
-        datasets: [{
-          label: "Max Weight (kg)",
-          data: data.map(d => d.weight),
-          borderColor: "#f9d423",
-          backgroundColor: "rgba(249,212,35,0.25)",
-          borderWidth: 4,
-          pointRadius: 5,
-          pointBackgroundColor: "#f9d423",
-          tension: 0.35
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          title: {
-            display: true,
-            text: "Strength Progression",
-            color: "#fff",
-            font: { size: 22, weight: "bold" },
-            padding: 20
-          },
-          legend: {
-            labels: {
-              color: "#fff",
-              font: { size: 14 }
-            }
-          }
-        },
-        scales: {
-          x: {
-            ticks: { color: "#fff", font: { size: 12 } },
-            grid: { color: "rgba(255,255,255,0.08)" }
-          },
-          y: {
-            ticks: { color: "#fff", font: { size: 14 } },
-            grid: { color: "rgba(255,255,255,0.15)" }
-          }
-        }
-      }
-    });
+  if (chartInstance) {
+    chartInstance.destroy();
+    chartInstance = null;
   }
 
-  /* -----------------------------
-     BODY GROUP USAGE (PIE)
-  ------------------------------ */
-  if (type === "bodygroups") {
-    const groups = await loadBodyGroupUsage();
+  if (type === "strength") {
+    await renderStrengthChart(ctx);
+  }
 
-    chartInstance = new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels: Object.keys(groups),
-        datasets: [{
-          data: Object.values(groups),
-          backgroundColor: [
-            "#ff4e50", "#f9d423", "#4CAF50", "#2196F3",
-            "#9C27B0", "#FF9800", "#00BCD4", "#9E9E9E"
-          ],
-          borderColor: "#222",
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          title: {
-            display: true,
-            text: "Most Used Body Groups",
-            color: "#fff",
-            font: { size: 22, weight: "bold" },
-            padding: 20
-          },
-          legend: {
-            position: "bottom",
-            labels: {
-              color: "#fff",
-              font: { size: 14 }
-            }
-          }
-        }
-      }
-    });
+  if (type === "bodygroups") {
+    await renderBodyGroupChart(ctx);
   }
 }
 
-document.getElementById("chartSelector").addEventListener("change", (e) => {
-  renderChart(e.target.value);
-});
+async function renderStrengthChart(ctx) {
+  const data = await loadStrengthProgress();
+  if (!data || !data.length) return;
 
-    // Auto-set today's date
-    document.addEventListener("DOMContentLoaded", () => {
-      const today = new Date().toISOString().split("T")[0];
-      document.getElementById("workoutDate").value = today;
-
-      // Restore workout name
-      const savedName = localStorage.getItem("workoutName");
-      if (savedName) {
-        document.getElementById("workoutName").value = savedName;
-      }
-
-      // Save workout name as user types
-      document.getElementById("workoutName").addEventListener("input", () => {
-        localStorage.setItem("workoutName", document.getElementById("workoutName").value);
-      });
-
-      const stored = JSON.parse(localStorage.getItem("selectedExercises"));
-      if (stored) {
-        selectedExercises = stored;
-        updateSelectedExercises();
-      }
-    });
-
-    let selectedExercises = [];
-
-    // Render exercises with sets
-function updateSelectedExercises() {
-  const container = document.getElementById("selectedExercisesList");
-  container.innerHTML = "";
-
-  selectedExercises.forEach((ex, index) => {
-
-    const div = document.createElement("div");
-    div.className = "exercise-entry-block";
-
-    div.innerHTML = `
-      <h3>${ex.name}</h3>
-      ${ex.note ? `<p><em>Note: ${ex.note}</em></p>` : ""}
-
-      <div class="sets-container" id="sets-${index}">
-        ${ex.sets.map((s, i) => `
-          <div class="set-row ${s.completed ? "set-completed" : ""}">
-            <span class="set-number">Set ${i + 1}</span>
-
-              ${
-                ex.type === "time-weight"
-                  ? `
-                    <div class="set-input-group">
-                      <label>Time (sec)</label>
-                      <input 
-                        type="number"
-                        value="${s.time || ""}"
-                        class="set-time"
-                        placeholder="0"
-                        ${s.completed ? "disabled" : ""}
-                      >
-                    </div>
-
-                    <div class="set-input-group">
-                      <label>Weight (kg)</label>
-                      <input 
-                        type="number"
-                        value="${s.weight ?? 0}"
-                        class="set-weight"
-                        placeholder="0"
-                        ${s.completed ? "disabled" : ""}
-                      >
-                    </div>
-                  `
-                  : `
-                    <div class="set-input-group">
-                      <label>Reps</label>
-                      <input 
-                        type="number"
-                        value="${s.reps || ""}"
-                        class="set-reps"
-                        placeholder="0"
-                        ${s.completed ? "disabled" : ""}
-                      >
-                    </div>
-
-                    <div class="set-input-group">
-                      <label>Weight (kg)</label>
-                      <input 
-                        type="number"
-                        value="${s.weight || ""}"
-                        class="set-weight"
-                        placeholder="0"
-                        ${s.completed ? "disabled" : ""}
-                      >
-                    </div>
-                  `
-              }
-
-
-            <button class="btn-complete-set" onclick="toggleSetComplete(${index}, ${i})">
-              ${s.completed ? "✔" : "✓"}
-            </button>
-
-            <img src="images/trophyIcon.png" 
-                 class="pr-badge ${s.isPR ? "pr-hit" : ""}" 
-                 id="pr-${index}-${i}" />
-
-            <span class="new-pr-label ${s.isPR ? "show" : ""}" 
-                  id="newpr-${index}-${i}">
-              ${s.isPR ? "NEW PR!" : ""}
-            </span>
-
-            <button class="btn-remove-set" onclick="removeSet(${index}, ${i})">✕</button>
-          </div>
-        `).join("")}
-      </div>
-
-      <button class="btn-secondary" onclick="addSet(${index})">+ Add Set</button>
-      <button class="btn-secondary" onclick="duplicateLastSet(${index})">Duplicate Last Set</button>
-      <button class="btn-remove" onclick="removeExercise(${index})">Remove Exercise</button>
-    `;
-
-    container.appendChild(div);
+  chartInstance = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: data.map(d => d.date),
+      datasets: [{
+        label: "Max Weight (kg)",
+        data: data.map(d => d.weight),
+        borderColor: "#f9d423",
+        backgroundColor: "rgba(249,212,35,0.25)",
+        borderWidth: 4,
+        pointRadius: 5,
+        pointBackgroundColor: "#f9d423",
+        tension: 0.35
+      }]
+    },
+    options: getBaseChartOptions("Strength Progression")
   });
 }
 
-    function addSet(exIndex) {
-      // Save current input values BEFORE re-rendering
-      syncSetInputs();
+async function renderBodyGroupChart(ctx) {
+  const groups = await loadBodyGroupUsage();
+  if (!groups) return;
 
-        if (selectedExercises[exIndex].type === "time-weight") {
-          selectedExercises[exIndex].sets.push({
-            time: "",
-            weight: 0 // bodyweight default
-          });
-        } else {
-          selectedExercises[exIndex].sets.push({
-            reps: "",
-            weight: ""
-          });
+  chartInstance = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: Object.keys(groups),
+      datasets: [{
+        data: Object.values(groups),
+        backgroundColor: BODY_GROUP_COLORS,
+        borderColor: "#222",
+        borderWidth: 2
+      }]
+    },
+    options: getPieChartOptions("Most Used Body Groups")
+  });
+}
+
+/* Chart Options */
+
+function getBaseChartOptions(titleText) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      title: {
+        display: true,
+        text: titleText,
+        color: "#fff",
+        font: { size: 22, weight: "bold" },
+        padding: 20
+      },
+      legend: {
+        labels: {
+          color: "#fff",
+          font: { size: 14 }
         }
-
-
-      localStorage.setItem("selectedExercises", JSON.stringify(selectedExercises));
-      updateSelectedExercises();
-    }
-
-    // Duplicate last set
-    function duplicateLastSet(exIndex) {
-      // Save current input values BEFORE re-rendering
-      syncSetInputs();
-
-      const last = selectedExercises[exIndex].sets.at(-1);
-      if (!last) return;
-
-      if (selectedExercises[exIndex].type === "time-weight") {
-        selectedExercises[exIndex].sets.push({
-          time: last.time,
-          weight: last.weight
-        });
-      } else {
-        selectedExercises[exIndex].sets.push({
-          reps: last.reps,
-          weight: last.weight
-        });
       }
-
-      localStorage.setItem("selectedExercises", JSON.stringify(selectedExercises));
-      updateSelectedExercises();
+    },
+    scales: {
+      x: {
+        ticks: { color: "#fff", font: { size: 12 } },
+        grid: { color: "rgba(255,255,255,0.08)" }
+      },
+      y: {
+        ticks: { color: "#fff", font: { size: 14 } },
+        grid: { color: "rgba(255,255,255,0.15)" }
+      }
     }
-    // Toggle set complete
+  };
+}
+
+function getPieChartOptions(titleText) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      title: {
+        display: true,
+        text: titleText,
+        color: "#fff",
+        font: { size: 22, weight: "bold" },
+        padding: 20
+      },
+      legend: {
+        position: "bottom",
+        labels: {
+          color: "#fff",
+          font: { size: 14 }
+        }
+      }
+    }
+  };
+}
+
+const BODY_GROUP_COLORS = [
+  "#ff4e50", "#f9d423", "#4CAF50", "#2196F3",
+  "#9C27B0", "#FF9800", "#00BCD4", "#9E9E9E"
+];
+
+/* Chart Selector */
+
+document.getElementById("chartSelector")?.addEventListener("change", e => {
+  renderChart(e.target.value);
+});
+
+/* Page Init */
+
+document.addEventListener("DOMContentLoaded", () => {
+  initialiseWorkoutDate();
+  restoreWorkoutName();
+  restoreSelectedExercises();
+});
+
+/* Workout Meta */
+
+function initialiseWorkoutDate() {
+  const dateInput = document.getElementById("workoutDate");
+  if (!dateInput) return;
+
+  dateInput.value = new Date().toISOString().split("T")[0];
+}
+
+function restoreWorkoutName() {
+  const input = document.getElementById("workoutName");
+  if (!input) return;
+
+  const saved = localStorage.getItem("workoutName");
+  if (saved) input.value = saved;
+
+  input.addEventListener("input", () => {
+    localStorage.setItem("workoutName", input.value);
+  });
+}
+
+function restoreSelectedExercises() {
+  const stored = localStorage.getItem("selectedExercises");
+  if (!stored) return;
+
+  selectedExercises = JSON.parse(stored);
+  updateSelectedExercises();
+}
+
+/* Selected Exercises */
+
+let selectedExercises = [];
+
+function updateSelectedExercises() {
+  const container = document.getElementById("selectedExercisesList");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  selectedExercises.forEach((exercise, index) => {
+    container.appendChild(renderExerciseBlock(exercise, index));
+  });
+}
+
+function renderExerciseBlock(ex, index) {
+  const div = document.createElement("div");
+  div.className = "exercise-entry-block";
+
+  div.innerHTML = `
+    <h3>${ex.name}</h3>
+    ${ex.note ? `<p><em>Note: ${ex.note}</em></p>` : ""}
+
+    <div class="sets-container" id="sets-${index}">
+      ${ex.sets.map((set, i) => renderSetRow(ex, set, index, i)).join("")}
+    </div>
+
+    <button type="button" class="btn-secondary" onclick="addSet(${index})">+ Add Set</button>
+    <button type="button" class="btn-secondary" onclick="duplicateLastSet(${index})">Duplicate Last Set</button>
+    <button type="button" class="btn-secondary" onclick="openNotes(${index})">Notes</button>
+    <button type="button" class="btn-remove" onclick="removeExercise(${index})">Remove Exercise</button>
+  `;
+
+  return div;
+}
+
+function renderSetRow(ex, set, exIndex, setIndex) {
+  return `
+    <div class="set-row ${set.completed ? "set-completed" : ""}">
+      <span class="set-number">Set ${setIndex + 1}</span>
+
+      ${renderSetInputs(ex, set)}
+
+      <button type="button" class="btn-complete-set" onclick="toggleSetComplete(${exIndex}, ${setIndex})">
+        ${set.completed ? "✔" : "✓"}
+      </button>
+
+      <img src="images/trophyIcon.png" class="pr-badge ${set.isPR ? "pr-hit" : ""}" id="pr-${exIndex}-${setIndex}" />
+
+      <button type="button" class="btn-remove-set" onclick="removeSet(${exIndex}, ${setIndex})">✕</button>
+    </div>
+  `;
+}
+
+function renderSetInputs(ex, set) {
+  if (ex.type === "time-weight") {
+    return `
+      <div class="set-input-group">
+        <label>Time (sec)</label>
+        <input type="number" class="set-time" value="${set.time || ""}" ${set.completed ? "disabled" : ""}>
+      </div>
+
+      <div class="set-input-group">
+        <label>Weight (kg)</label>
+        <input type="number" class="set-weight" value="${set.weight ?? 0}" ${set.completed ? "disabled" : ""}>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="set-input-group">
+      <label>Reps</label>
+      <input type="number" class="set-reps" value="${set.reps || ""}" ${set.completed ? "disabled" : ""}>
+    </div>
+
+    <div class="set-input-group">
+      <label>Weight (kg)</label>
+      <input type="number" class="set-weight" value="${set.weight || ""}" ${set.completed ? "disabled" : ""}>
+    </div>
+  `;
+}
+
+/* Exercise Set Management */
+
+function addSet(exIndex) {
+  syncSetInputs();
+
+  const ex = selectedExercises[exIndex];
+  if (!ex) return;
+
+  ex.sets.push(
+    ex.type === "time-weight"
+      ? { time: "", weight: 0, completed: false, isPR: false }
+      : { reps: "", weight: "", completed: false, isPR: false }
+  );
+
+  persistExercises();
+}
+
+function duplicateLastSet(exIndex) {
+  syncSetInputs();
+
+  const ex = selectedExercises[exIndex];
+  const last = ex?.sets.at(-1);
+  if (!last) return;
+
+  ex.sets.push({ ...last, completed: false, isPR: false });
+  persistExercises();
+}
+
 function toggleSetComplete(exIndex, setIndex) {
   syncSetInputs();
 
-  const set = selectedExercises[exIndex].sets[setIndex];
+  const set = selectedExercises?.[exIndex]?.sets?.[setIndex];
+  if (!set) return;
+
   set.completed = !set.completed;
+  persistExercises();
 
-  localStorage.setItem("selectedExercises", JSON.stringify(selectedExercises));
-  updateSelectedExercises();
-
-  // Only trigger PR when completing a set with weight
   if (set.completed && set.weight > 0) {
     checkPRIndicators(true);
   }
 }
 
+function removeSet(exIndex, setIndex) {
+  syncSetInputs();
+  selectedExercises?.[exIndex]?.sets.splice(setIndex, 1);
+  persistExercises();
+}
 
-    // Remove a set
-    function removeSet(exIndex, setIndex) {
-      syncSetInputs();
+function removeExercise(exIndex) {
+  syncSetInputs();
+  selectedExercises.splice(exIndex, 1);
+  persistExercises();
+}
 
-      selectedExercises[exIndex].sets.splice(setIndex, 1);
+function persistExercises() {
+  localStorage.setItem("selectedExercises", JSON.stringify(selectedExercises));
+  updateSelectedExercises();
+}
 
-      localStorage.setItem("selectedExercises", JSON.stringify(selectedExercises));
-      updateSelectedExercises();
+/* Notes Modal Handlers */
+function openNotes(exIndex) {
+  syncSetInputs();
+  const ex = selectedExercises[exIndex];
+  if (!ex) return;
+
+  const modal = document.getElementById("notesModal");
+  document.getElementById("modalExerciseName").textContent = ex.name || "";
+  document.getElementById("exerciseNoteInput").value = ex.note || "";
+  modal.dataset.exIndex = exIndex;
+  modal.hidden = false;
+  document.getElementById("exerciseNoteInput").focus();
+}
+
+document.getElementById("saveNoteBtn")?.addEventListener("click", () => {
+  const modal = document.getElementById("notesModal");
+  if (!modal || !modal.dataset.exIndex) return;
+
+  const idx = Number(modal.dataset.exIndex);
+  const val = document.getElementById("exerciseNoteInput").value.trim();
+
+  if (!selectedExercises[idx]) return;
+  if (val) selectedExercises[idx].note = val;
+  else delete selectedExercises[idx].note;
+
+  persistExercises();
+  modal.hidden = true;
+  delete modal.dataset.exIndex;
+});
+
+document.getElementById("cancelNoteBtn")?.addEventListener("click", () => {
+  const modal = document.getElementById("notesModal");
+  if (!modal) return;
+  modal.hidden = true;
+  delete modal.dataset.exIndex;
+});
+
+// Click backdrop to close
+document.getElementById("notesModal")?.addEventListener("click", (e) => {
+  if (e.target.id === "notesModal") {
+    e.currentTarget.hidden = true;
+    delete e.currentTarget.dataset.exIndex;
+  }
+});
+
+// Close on Escape
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    const modal = document.getElementById("notesModal");
+    if (modal && !modal.hidden) {
+      modal.hidden = true;
+      delete modal.dataset.exIndex;
     }
+  }
+});
 
-    // Remove an exercise
-      function removeExercise(index) {
-        syncSetInputs();
+/* Input Sync */
 
-        selectedExercises.splice(index, 1);
-
-        localStorage.setItem("selectedExercises", JSON.stringify(selectedExercises));
-        updateSelectedExercises();
-      }
-
-    // Sync input fields into selectedExercises before saving
 function syncSetInputs() {
   selectedExercises.forEach((ex, exIndex) => {
     const rows = document.querySelectorAll(`#sets-${exIndex} .set-row`);
 
     ex.sets = [...rows].map((row, i) => {
-    if (ex.type === "time-weight") {
-      return {
-        time: Number(row.querySelector(".set-time").value),
-        weight: Number(row.querySelector(".set-weight").value) || 0,
-        completed: ex.sets[i].completed || false,
-        isPR: ex.sets[i].isPR || false
-      };
-    }
+      if (ex.type === "time-weight") {
+        return {
+          time: Number(row.querySelector(".set-time")?.value) || 0,
+          weight: Number(row.querySelector(".set-weight")?.value) || 0,
+          completed: ex.sets[i]?.completed || false,
+          isPR: ex.sets[i]?.isPR || false
+        };
+      }
 
-
       return {
-        reps: Number(row.querySelector(".set-reps").value),
-        weight: Number(row.querySelector(".set-weight").value),
-        completed: ex.sets[i].completed || false,
-        isPR: ex.sets[i].isPR || false
+        reps: Number(row.querySelector(".set-reps")?.value) || 0,
+        weight: Number(row.querySelector(".set-weight")?.value) || 0,
+        completed: ex.sets[i]?.completed || false,
+        isPR: ex.sets[i]?.isPR || false
       };
     });
   });
@@ -682,247 +870,209 @@ function syncSetInputs() {
   localStorage.setItem("selectedExercises", JSON.stringify(selectedExercises));
 }
 
+/* Navigation */
 
-    // Navigate to selector
-    document.getElementById("openExerciseSelector").addEventListener("click", () => {
-      window.location.href = "exercise-selector.html";
-    });
+document.getElementById("openExerciseSelector")?.addEventListener("click", () => {
+  window.location.href = "exercise-selector.html";
+});
 
-    // Update PRs and return a list of new PRs hit
+/* Personal Records */
+
 async function updatePRs(exercises, date) {
   const user = auth.currentUser;
   if (!user) return [];
 
-  const newPRs = []; // store PR hits for animations/toasts
+  const newPRs = [];
 
   for (const ex of exercises) {
-    if (!ex.sets || ex.sets.length === 0) continue;
+    if (!ex.sets?.length) continue;
 
-    // Determine PR value based on exercise type
-    const maxValue = ex.type === "time-weight"
-      ? Math.max(...ex.sets.map(s => s.time || 0))
-      : Math.max(...ex.sets.map(s => s.weight || 0));
+    const maxValue =
+      ex.type === "time-weight"
+        ? Math.max(...ex.sets.map(s => s.time || 0))
+        : Math.max(...ex.sets.map(s => s.weight || 0));
 
-    const prRef = db.collection("users")
+    const ref = db
+      .collection("users")
       .doc(user.uid)
       .collection("personalRecords")
       .doc(ex.name);
 
-    const prDoc = await prRef.get();
-    const oldPR = prDoc.exists ? prDoc.data().weight : 0;
+    const snap = await ref.get();
+    const oldPR = snap.exists ? snap.data().weight : 0;
 
-    // If new PR hit
     if (maxValue > oldPR) {
-      await prRef.set({
-        weight: maxValue, // still stored as "weight" for simplicity
-        date
-      });
-
-      newPRs.push({
-        name: ex.name,
-        weight: maxValue
-      });
+      await ref.set({ weight: maxValue, date });
+      newPRs.push({ name: ex.name, value: maxValue });
     }
   }
 
-  return newPRs; // return list of PRs hit
+  return newPRs;
 }
 
-      // Load PRs (with trophy + clean formatting)
-      async function loadPRs() {
-      const user = auth.currentUser;
-      if (!user) return;
+async function loadPRs() {
+  const user = auth.currentUser;
+  if (!user) return;
 
-      const snapshot = await db.collection("users")
-        .doc(user.uid)
-        .collection("personalRecords")
-        .get();
+  const container = document.getElementById("prCategories");
+  container.innerHTML = "";
 
-      const container = document.getElementById("prCategories");
-      container.innerHTML = "";
+  const snapshot = await db
+    .collection("users")
+    .doc(user.uid)
+    .collection("personalRecords")
+    .get();
 
-      if (snapshot.empty) {
-        container.innerHTML = `<p style="color:#aaa;">No PRs yet — go set some records!</p>`;
-        return;
-      }
+  if (snapshot.empty) {
+    container.innerHTML = `<p class="empty-state">No PRs yet — go set some records!</p>`;
+    return;
+  }
 
-      // Build category structure
-      const categories = {};
-      snapshot.forEach(doc => {
-        const name = doc.id;
-        const data = doc.data();
-        const weight = data.weight;
+  const categories = {};
 
-        // Find category
-        let category = "Other";
-        for (const cat in EXERCISE_CATEGORIES) {
-          if (EXERCISE_CATEGORIES[cat].includes(name)) {
-            category = cat;
-            break;
-          }
-        }
+  snapshot.forEach(doc => {
+    const name = doc.id;
+    const weight = doc.data().weight;
 
-        if (!categories[category]) categories[category] = [];
-        categories[category].push({ name, weight });
-      });
-
-      // Render categories
-      for (const category in categories) {
-        const block = document.createElement("div");
-        block.className = "pr-category";
-
-        block.innerHTML = `
-          <div class="pr-category-header">
-            <span>${category}</span>
-            <span class="pr-arrow">▶</span>
-          </div>
-
-          <div class="pr-category-content">
-            ${categories[category].map(pr => `
-              <div class="pr-item">
-                <span class="pr-item-name">${pr.name}</span>
-                <span class="pr-item-weight">
-                ${
-                  TIMED_EXERCISES.includes(pr.name)
-                    ? `${pr.weight} sec`
-                    : `${pr.weight} kg`
-                }
-              </span>
-              </div>
-            `).join("")}
-          </div>
-        `;
-
-        container.appendChild(block);
-      }
-
-      // Collapsible logic
-      document.querySelectorAll(".pr-category-header").forEach(header => {
-        header.addEventListener("click", () => {
-          const content = header.nextElementSibling;
-          const arrow = header.querySelector(".pr-arrow");
-
-          const isOpen = content.style.display === "block";
-          content.style.display = isOpen ? "none" : "block";
-          arrow.classList.toggle("open", !isOpen);
-        });
-      });
-
-      // Search logic
-      document.getElementById("prSearch").addEventListener("input", e => {
-        const term = e.target.value.toLowerCase();
-
-        document.querySelectorAll(".pr-item").forEach(item => {
-          const name = item.querySelector(".pr-item-name").textContent.toLowerCase();
-          item.style.display = name.includes(term) ? "flex" : "none";
-        });
+    let category = "Other";
+    function matchesCategoryName(exName, catArray) {
+      const n = (exName||"").toLowerCase();
+      return catArray.some(entry => {
+        const e = entry.toLowerCase();
+        if (n === e || n.includes(e) || e.includes(n)) return true;
+        const tokens = e.split(/\s+/).filter(t => t.length >= 4);
+        const matched = tokens.filter(t => n.includes(t)).length;
+        return matched >= 2;
       });
     }
 
-    // Check and show PR indicators
+    for (const cat in EXERCISE_CATEGORIES) {
+      if (matchesCategoryName(name, EXERCISE_CATEGORIES[cat])) {
+        category = cat;
+        break;
+      }
+    }
 
-      // Prevent toast spam
-      let prToastCooldown = false;
+    categories[category] ??= [];
+    categories[category].push({ name, weight });
+  });
 
-      // Check and show PR indicators
+  Object.entries(categories).forEach(([category, prs]) => {
+    const block = document.createElement("div");
+    block.className = "pr-category";
+
+    block.innerHTML = `
+      <div class="pr-category-header">
+        <span>${category}</span>
+        <span class="pr-arrow">▶</span>
+      </div>
+      <div class="pr-category-content">
+        ${prs.map(pr => `
+          <div class="pr-item">
+            <span class="pr-item-name">${pr.name}</span>
+            <span class="pr-item-weight">
+              ${TIMED_EXERCISES.includes(pr.name) ? `${pr.weight} sec` : `${pr.weight} kg`}
+            </span>
+          </div>
+        `).join("")}
+      </div>
+    `;
+
+    container.appendChild(block);
+  });
+
+  document.querySelectorAll(".pr-category-header").forEach(header => {
+    header.addEventListener("click", () => {
+      const content = header.nextElementSibling;
+      const arrow = header.querySelector(".pr-arrow");
+      const open = content.style.display === "block";
+      content.style.display = open ? "none" : "block";
+      arrow.classList.toggle("open", !open);
+    });
+  });
+
+  document.getElementById("prSearch")?.addEventListener("input", e => {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll(".pr-item").forEach(item => {
+      const name = item.querySelector(".pr-item-name").textContent.toLowerCase();
+      item.style.display = name.includes(term) ? "flex" : "none";
+    });
+  });
+}
+
+/* PR Indicators */
+
+let prToastCooldown = false;
+
 async function checkPRIndicators(triggeredByCompletion = false) {
   const user = auth.currentUser;
   if (!user) return;
 
-  // Load PRs
-  const prSnapshot = await db.collection("users")
+  const snapshot = await db
+    .collection("users")
     .doc(user.uid)
     .collection("personalRecords")
     .get();
 
   const prMap = {};
-  prSnapshot.forEach(doc => {
-    prMap[doc.id] = doc.data().weight;
-  });
+  snapshot.forEach(doc => prMap[doc.id] = doc.data().weight);
 
   selectedExercises.forEach((ex, exIndex) => {
     const currentPR = prMap[ex.name] || 0;
-
-    // Find the heaviest set for this exercise
-    const maxSetWeight = Math.max(...ex.sets.map(s => s.weight));
+    const maxWeight = Math.max(...ex.sets.map(s => s.weight || 0));
 
     ex.sets.forEach((set, setIndex) => {
       const badge = document.getElementById(`pr-${exIndex}-${setIndex}`);
       const label = document.getElementById(`newpr-${exIndex}-${setIndex}`);
       if (!badge) return;
 
-      const isMaxSet = set.weight === maxSetWeight;
-
-      /* ---------------------------------------------------------
-         ONLY UPDATE PR STATE IF THIS WAS TRIGGERED BY COMPLETION
-         --------------------------------------------------------- */
       if (triggeredByCompletion) {
-        if (isMaxSet && maxSetWeight > currentPR) {
-          set.isPR = true;   // store PR state
-        } else {
-          set.isPR = false;
-        }
-      }
+        const wasPR = !!set.isPR;
+        const isNowPR = set.weight === maxWeight && maxWeight > currentPR;
+        set.isPR = isNowPR;
 
-      /* ---------------------------------------------------------
-         ALWAYS DISPLAY PR STATE FROM STORED VALUE (set.isPR)
-         --------------------------------------------------------- */
-      if (set.isPR) {
-        badge.classList.add("pr-hit");
+        badge.classList.toggle("pr-hit", set.isPR);
 
-        if (label) {
-          label.textContent = "NEW PR!";
-          label.classList.add("show");
-        }
-
-        // Only fire celebration when triggered by completion
-        if (triggeredByCompletion && !prToastCooldown) {
+        // Only play sound/animation when the set newly becomes a PR (transition false->true)
+        if (isNowPR && !wasPR && !prToastCooldown) {
           prToastCooldown = true;
-
           const rect = badge.getBoundingClientRect();
           spawnConfetti(rect.x + 10, rect.y + 10);
-
-          const sound = document.getElementById("prSound");
-          if (sound) sound.play();
+          document.getElementById("prSound")?.play();
 
           showPRToast(
             ex.name,
             ex.type === "time-weight" ? `${set.time} sec` : `${set.weight} kg`
           );
 
-
           setTimeout(() => prToastCooldown = false, 1500);
         }
-
       } else {
-        // Remove visuals if not PR
-        badge.classList.remove("pr-hit");
-        if (label) label.classList.remove("show");
+        badge.classList.toggle("pr-hit", set.isPR);
       }
     });
   });
 }
 
-    // Show PR Toast
-    function showPRToast(exName, weight) {
-    const toast = document.getElementById("prToast");
-    toast.textContent = `New PR on ${exName}! ${weight} kg`;
-    toast.classList.add("show");
+/* Effects */
 
-    setTimeout(() => toast.classList.remove("show"), 2000);
-    }
+function showPRToast(name, value) {
+  const toast = document.getElementById("prToast");
+  toast.textContent = `New PR on ${name}! ${value}`;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2000);
+}
 
-    // Confetti effect
-    function spawnConfetti(x, y) {
+function spawnConfetti(x, y) {
   for (let i = 0; i < 8; i++) {
     const dot = document.createElement("div");
     dot.className = "confetti-dot";
     document.body.appendChild(dot);
 
-    dot.style.left = x + "px";
-    dot.style.top = y + "px";
+    dot.style.left = `${x}px`;
+    dot.style.top = `${y}px`;
 
-    const angle = Math.random() * 2 * Math.PI;
+    const angle = Math.random() * Math.PI * 2;
     const distance = 40 + Math.random() * 20;
 
     dot.animate([
@@ -934,62 +1084,63 @@ async function checkPRIndicators(triggeredByCompletion = false) {
   }
 }
 
-    // Save workout
-    document.getElementById("saveWorkoutBtn").addEventListener("click", async () => {
-      const user = auth.currentUser;
-      if (!user) return alert("Not logged in");
+/* Save Workout */
 
-      const date = document.getElementById("workoutDate").value;
-      if (!date) return alert("Select a date");
-      if (selectedExercises.length === 0) return alert("Add at least one exercise");
+document.getElementById("saveWorkoutBtn")?.addEventListener("click", async () => {
+  const user = auth.currentUser;
+  if (!user) return alert("Not logged in");
 
-      syncSetInputs(); // IMPORTANT
+  const date = document.getElementById("workoutDate").value;
+  if (!date) return alert("Select a date");
+  if (!selectedExercises.length) return alert("Add at least one exercise");
 
-      const workoutName = document.getElementById("workoutName").value.trim();
+  syncSetInputs();
 
-      await db.collection("users").doc(user.uid).collection("workouts").add({
-        workoutName: workoutName || date, // fallback if empty
-        date, // keep date for sorting
-        exercises: selectedExercises,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
+  const workoutName = document.getElementById("workoutName").value.trim();
 
-      await updatePRs(selectedExercises, date);
-
-      alert("Workout saved!");
-
-      selectedExercises = [];
-      localStorage.removeItem("selectedExercises");
-      updateSelectedExercises();
-
-      loadWorkoutHistory();
-      loadStrengthProgress();
-      loadPRs();
+  await db
+    .collection("users")
+    .doc(user.uid)
+    .collection("workouts")
+    .add({
+      workoutName: workoutName || date,
+      date,
+      exercises: selectedExercises,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
 
-    // Auth state
-    auth.onAuthStateChanged(user => {
-      if (!user) {
-        document.getElementById("accessBlocker").style.display = "flex";
-      } else {
-        document.getElementById("accessBlocker").style.display = "none";
-        loadUserName();
-        loadWorkoutHistory();
-        loadStrengthProgress();
-        loadPRs();
+  await updatePRs(selectedExercises, date);
 
-        // Load default chart
-        renderChart("strength");
+  alert("Workout saved!");
 
-      }
-    });
-  </script>
+  selectedExercises = [];
+  localStorage.removeItem("selectedExercises");
+  updateSelectedExercises();
+
+  loadWorkoutHistory();
+  loadPRs();
+  renderChart("strength");
+});
+
+/* Auth State */
+
+auth.onAuthStateChanged(user => {
+
+  if (!user) return;
+
+  loadUserName();
+  loadWorkoutHistory();
+  loadPRs();
+  renderChart("strength");
+});
+
+</script>
 
 </body>
 
-<page-footer>
-  <a>Made by Adam Dimkovski</a><br>
-  <footer-text>Litness</footer-text>
-</page-footer>
+<!-- Footer -->
+<footer class="page-footer">
+  <span class="footer-text">Litness</span>
+</footer>
 
 </html>
